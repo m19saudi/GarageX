@@ -62,6 +62,10 @@
         .table-input { background: #111; border: 1px solid #333; color: white; padding: 10px; width: 100%; font-size: 13px; outline: none; transition: 0.2s; }
         .table-input:focus { border-color: var(--accent); background: #181818; }
 
+        /* BULK ACTIONS UNIFORM */
+        .bulk-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .bulk-actions .btn { padding: 12px; font-size: 11px; }
+
         /* DRAG & DROP UPLOAD */
         .upload-area { position: relative; border: 2px dashed #333; padding: 40px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
         .upload-area.dragover { border-color: var(--accent); background: rgba(0, 242, 255, 0.1); box-shadow: inset 0 0 20px var(--accent-glow); }
@@ -76,7 +80,7 @@
 
         input, select { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 14px; margin-bottom: 15px; outline: none; }
         .btn { background: var(--accent); color: black; border: none; padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; width: 100%; letter-spacing: 1px; transition: 0.2s; }
-        .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-bottom: 10px; }
+        .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
         .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); margin-top: 10px; }
         .btn-danger:hover { background: var(--danger); color: white; }
 
@@ -108,7 +112,6 @@
                 <div class="map-node" style="top:75%; left:35%" onclick="filterMap('Industrial', this)">S-03</div>
                 <div class="map-node" style="top:25%; left:55%" onclick="filterMap('Vinewood', this)">S-04</div>
             </div>
-            <p style="text-align:center; font-size:9px; color:var(--text-dim); margin-top:20px; letter-spacing:4px;">SELECT SECTOR SIGNAL TO ISOLATE ASSETS</p>
         </div>
 
         <div id="screen-data" class="screen">
@@ -116,26 +119,26 @@
                 <div style="font-size: 2.5rem; font-weight: 900; color: var(--accent);" id="stat-total">00</div>
                 <div style="font-size: 10px; color: var(--text-dim); letter-spacing: 2px;">TOTAL ASSETS DETECTED</div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn btn-outline" onclick="exportBackup()">EXPORT BACKUP</button>
-                    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">IMPORT DATABASE</button>
+                    <button class="btn btn-outline" onclick="exportBackup()" style="font-size:10px; padding:10px;">EXPORT BACKUP</button>
+                    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()" style="font-size:10px; padding:10px;">IMPORT DATABASE</button>
                 </div>
                 <input type="file" id="importFile" hidden onchange="importDB(event)">
             </div>
 
             <div class="data-section" style="border-left-color: #fff;">
-                <h3 style="font-size: 12px; letter-spacing: 2px; margin-top: 0;">BULK DATA ENTRY</h3>
+                <h3 style="font-size: 11px; letter-spacing: 2px; margin-top: 0;">BULK DATA ENTRY</h3>
                 <table class="bulk-table">
                     <thead>
-                        <tr><th>VEHICLE NAME</th><th>GARAGE ASSIGNMENT</th><th>ACTION</th></tr>
+                        <tr><th>NAME</th><th>GARAGE</th><th>ACTION</th></tr>
                     </thead>
                     <tbody id="bulkBody"></tbody>
                 </table>
-                <div style="display:flex; gap:10px; margin-top:15px;">
+                <div class="bulk-actions">
                     <button class="btn btn-outline" onclick="promptBulkRows()">+ NEW ROWS</button>
                     <button class="btn" onclick="processBulk()">INITIALIZE AND SYNC</button>
                 </div>
             </div>
-            <button class="btn btn-danger" onclick="nukeDB()">PERMANENT SYSTEM WIPE</button>
+            <button class="btn btn-danger" onclick="nukeDB()" style="font-size:10px;">PERMANENT SYSTEM WIPE</button>
         </div>
     </div>
 
@@ -153,20 +156,18 @@
     <div class="overlay" id="editOverlay">
         <div class="modal-sheet" onclick="event.stopPropagation()">
             <h2 id="modalTitle" style="margin-top:0; font-style: italic; letter-spacing: 2px;">NEW CAR ASSET</h2>
-            <input type="text" id="vName" placeholder="VEHICLE MODEL NAME">
+            <input type="text" id="vName" placeholder="MODEL NAME">
             <select id="vGarage">
-                <option value="North Sector">NORTH SECTOR GARAGE</option>
+                <option value="North Sector">NORTH SECTOR</option>
                 <option value="Downtown Hub">DOWNTOWN HUB</option>
-                <option value="Industrial">INDUSTRIAL DOCKS</option>
-                <option value="Vinewood">VINEWOOD ESTATE</option>
+                <option value="Industrial">INDUSTRIAL</option>
+                <option value="Vinewood">VINEWOOD</option>
             </select>
-            <input type="text" id="vTags" placeholder="TAGS (e.g. SUPER, SPORTS)">
-            
+            <input type="text" id="vTags" placeholder="TAGS (SUPER, SPORTS)">
             <div class="upload-area" id="dropZone">
-                <span id="uploadLabel" class="upload-text">DRAG & DROP IMAGE OR CLICK TO UPLOAD</span>
+                <span id="uploadLabel" class="upload-text">DRAG & DROP IMAGE OR CLICK</span>
                 <input type="file" id="vImg" accept="image/*" onchange="updateUploadLabel(this)">
             </div>
-
             <button class="btn" onclick="saveVehicle()">CONFIRM</button>
             <button class="btn" style="background:none; color:white; margin-top:10px;" onclick="closeModal('editOverlay')">CANCEL</button>
         </div>
@@ -175,7 +176,7 @@
     <div class="fab" onclick="openAdd()">+</div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('VCORE_FINAL_V4')) || [];
+        let db = JSON.parse(localStorage.getItem('VCORE_FINAL_V5')) || [];
         let activeIdx = null;
         let mapFilter = '';
 
@@ -183,7 +184,6 @@
             if(e.target.classList.contains('overlay')) { closeModal('previewOverlay'); closeModal('editOverlay'); }
         }
 
-        /* DRAG & DROP LOGIC */
         const dropZone = document.getElementById('dropZone');
         ['dragover', 'dragenter'].forEach(e => {
             dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.add('dragover'); });
@@ -218,7 +218,7 @@
         }
 
         function promptBulkRows() {
-            const count = prompt("How many rows to add?", "5");
+            const count = prompt("Rows to add?", "5");
             if (count && !isNaN(count)) addRows(parseInt(count));
         }
 
@@ -226,7 +226,7 @@
             const tbody = document.getElementById('bulkBody');
             for(let i = 0; i < count; i++) {
                 const row = document.createElement('tr');
-                row.innerHTML = `<td><input type="text" class="table-input bulk-name" placeholder="Model..." tabindex="1"></td><td><select class="table-input bulk-garage" tabindex="-1"><option value="North Sector">NORTH SECTOR</option><option value="Downtown Hub">DOWNTOWN HUB</option><option value="Industrial">INDUSTRIAL</option><option value="Vinewood">VINEWOOD</option></select></td><td><button class="btn-danger" style="padding:5px 10px;" onclick="this.closest('tr').remove()" tabindex="-1">X</button></td>`;
+                row.innerHTML = `<td><input type="text" class="table-input bulk-name" placeholder="Name..." tabindex="1"></td><td><select class="table-input bulk-garage" tabindex="-1"><option value="North Sector">NORTH</option><option value="Downtown Hub">DOWNTOWN</option><option value="Industrial">INDUSTRIAL</option><option value="Vinewood">VINEWOOD</option></select></td><td><button class="btn-danger" style="padding:5px 10px;" onclick="this.closest('tr').remove()" tabindex="-1">X</button></td>`;
                 tbody.appendChild(row);
             }
         }
@@ -249,14 +249,14 @@
         function openAdd() {
             activeIdx = null; document.getElementById('modalTitle').innerText = "NEW CAR ASSET";
             document.getElementById('vName').value = ''; document.getElementById('vTags').value = ''; document.getElementById('vImg').value = '';
-            document.getElementById('uploadLabel').innerText = "DRAG & DROP IMAGE OR CLICK TO UPLOAD";
+            document.getElementById('uploadLabel').innerText = "DRAG & DROP IMAGE OR CLICK";
             document.getElementById('editOverlay').classList.add('active');
         }
 
         function openEdit() {
-            const v = db[activeIdx]; document.getElementById('modalTitle').innerText = "MODIFY ASSET DATA";
+            const v = db[activeIdx]; document.getElementById('modalTitle').innerText = "MODIFY DATA";
             document.getElementById('vName').value = v.name; document.getElementById('vTags').value = v.tags.join(', ');
-            document.getElementById('vGarage').value = v.garage; document.getElementById('uploadLabel').innerText = "REPLACE IMAGE (DRAG OR CLICK)";
+            document.getElementById('vGarage').value = v.garage; document.getElementById('uploadLabel').innerText = "REPLACE IMAGE";
             closeModal('previewOverlay'); document.getElementById('editOverlay').classList.add('active');
         }
 
@@ -274,7 +274,7 @@
 
         function deleteFromPreview() { if(confirm("DELETE?")) { db.splice(activeIdx, 1); sync(); closeModal('previewOverlay'); } }
 
-        function sync() { localStorage.setItem('VCORE_FINAL_V4', JSON.stringify(db)); render(); updateStats(); }
+        function sync() { localStorage.setItem('VCORE_FINAL_V5', JSON.stringify(db)); render(); updateStats(); }
         function render() {
             const grid = document.getElementById('grid'); grid.innerHTML = '';
             const query = document.getElementById('searchInput').value.toLowerCase();
@@ -292,7 +292,7 @@
             const a = document.createElement('a'); a.href = url; a.download = "VCORE_BACKUP.json"; a.click();
         }
         function importDB(e) {
-            const reader = new FileReader(); reader.onload = (ev) => { db = JSON.parse(ev.target.result); sync(); alert("DATABASE RESTORED"); };
+            const reader = new FileReader(); reader.onload = (ev) => { db = JSON.parse(ev.target.result); sync(); alert("RESTORED"); };
             reader.readAsText(e.target.files[0]);
         }
         function nukeDB() { if(confirm("WIPE?")) { db = []; sync(); } }
