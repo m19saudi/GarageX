@@ -49,43 +49,42 @@
         .card-name { font-weight: 900; text-transform: uppercase; font-size: 1rem; }
         .card-meta { font-size: 9px; color: var(--accent); text-transform: uppercase; }
 
-        /* MAP */
+        /* NETWORK MAP */
         .map-wrapper { height: 400px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); position: relative; background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 25px 25px; }
         .map-node { position: absolute; width: 50px; height: 50px; border: 1px solid var(--accent); background: rgba(0, 242, 255, 0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; transition: 0.3s; }
         .map-node.active, .map-node:hover { background: var(--accent); color: black; box-shadow: 0 0 20px var(--accent); }
 
         /* DATA & BULK */
-        .data-section { background: rgba(255,255,255,0.03); padding: 25px; border-left: 4px solid var(--accent); margin-bottom: 30px; }
-        .bulk-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .bulk-table th { text-align: left; padding: 10px; font-size: 10px; color: var(--accent); border-bottom: 1px solid #222; }
-        .bulk-table td { padding: 8px; border-bottom: 1px solid #111; }
-        .table-input { background: #111; border: 1px solid #333; color: white; padding: 10px; width: 100%; font-size: 13px; outline: none; transition: 0.2s; }
-        .table-input:focus { border-color: var(--accent); background: #181818; }
+        .data-section { background: rgba(255,255,255,0.03); padding: 20px; border-left: 4px solid var(--accent); margin-bottom: 20px; }
+        .bulk-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .bulk-table th { text-align: left; padding: 5px 10px; font-size: 9px; color: var(--accent); border-bottom: 1px solid #222; text-transform: uppercase; }
+        .bulk-table td { padding: 3px 5px; border-bottom: 1px solid #111; vertical-align: middle; }
+        
+        .table-input { background: #111; border: 1px solid #222; color: white; padding: 8px; width: 100%; font-size: 12px; outline: none; transition: 0.2s; display: block; }
+        .table-input:focus { border-color: var(--accent); }
 
-        /* BULK ACTIONS UNIFORM */
-        .bulk-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .bulk-actions .btn { padding: 12px; font-size: 11px; }
+        .bulk-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .bulk-actions .btn { padding: 10px; font-size: 10px; }
 
-        /* DRAG & DROP UPLOAD */
-        .upload-area { position: relative; border: 2px dashed #333; padding: 40px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
-        .upload-area.dragover { border-color: var(--accent); background: rgba(0, 242, 255, 0.1); box-shadow: inset 0 0 20px var(--accent-glow); }
-        .upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-        .upload-text { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); pointer-events: none; }
+        .btn-del-row { background: transparent; color: var(--danger); border: 1px solid var(--danger); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; margin: 0 auto; transition: 0.2s; }
+        .btn-del-row:hover { background: var(--danger); color: white; }
 
         /* MODALS */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .overlay.active { display: flex; }
-        .modal-sheet { background: #080808; width: 100%; max-width: 550px; border: 1px solid var(--accent); padding: 30px; box-shadow: 0 0 50px #000; position: relative; }
-        .preview-img { width: 100%; height: 250px; object-fit: cover; border: 1px solid var(--border); margin-bottom: 20px; }
+        .modal-sheet { background: #080808; width: 100%; max-width: 550px; border: 1px solid var(--accent); padding: 30px; position: relative; }
+        
+        .upload-area { position: relative; border: 2px dashed #333; padding: 30px; text-align: center; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
+        .upload-area.dragover { border-color: var(--accent); background: rgba(0, 242, 255, 0.1); }
+        .upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .upload-text { font-size: 10px; text-transform: uppercase; color: var(--text-dim); pointer-events: none; }
 
-        input, select { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 14px; margin-bottom: 15px; outline: none; }
+        input, select { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 12px; margin-bottom: 12px; outline: none; }
         .btn { background: var(--accent); color: black; border: none; padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; width: 100%; letter-spacing: 1px; transition: 0.2s; }
         .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
-        .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); margin-top: 10px; }
-        .btn-danger:hover { background: var(--danger); color: white; }
-
-        .fab { position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 32px; cursor: pointer; z-index: 100; box-shadow: 0 0 20px var(--accent-glow); transition: 0.3s; }
-        .fab:hover { transform: scale(1.1) rotate(90deg); }
+        .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+        
+        .fab { position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 32px; cursor: pointer; z-index: 100; box-shadow: 0 0 20px var(--accent-glow); }
     </style>
 </head>
 <body onclick="checkClickOutside(event)">
@@ -112,24 +111,25 @@
                 <div class="map-node" style="top:75%; left:35%" onclick="filterMap('Industrial', this)">S-03</div>
                 <div class="map-node" style="top:25%; left:55%" onclick="filterMap('Vinewood', this)">S-04</div>
             </div>
+            <p style="text-align:center; font-size:10px; color:var(--text-dim); margin-top:25px; letter-spacing:4px;">CHOOSE A GARAGE TO EXPLORE</p>
         </div>
 
         <div id="screen-data" class="screen">
             <div class="data-section">
-                <div style="font-size: 2.5rem; font-weight: 900; color: var(--accent);" id="stat-total">00</div>
-                <div style="font-size: 10px; color: var(--text-dim); letter-spacing: 2px;">TOTAL ASSETS DETECTED</div>
-                <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn btn-outline" onclick="exportBackup()" style="font-size:10px; padding:10px;">EXPORT BACKUP</button>
-                    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()" style="font-size:10px; padding:10px;">IMPORT DATABASE</button>
+                <div style="font-size: 2.2rem; font-weight: 900; color: var(--accent);" id="stat-total">00</div>
+                <div style="font-size: 9px; color: var(--text-dim); letter-spacing: 2px;">TOTAL ASSETS</div>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button class="btn btn-outline" onclick="exportBackup()" style="font-size:9px; padding:8px;">EXPORT</button>
+                    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()" style="font-size:9px; padding:8px;">IMPORT</button>
                 </div>
                 <input type="file" id="importFile" hidden onchange="importDB(event)">
             </div>
 
             <div class="data-section" style="border-left-color: #fff;">
-                <h3 style="font-size: 11px; letter-spacing: 2px; margin-top: 0;">BULK DATA ENTRY</h3>
+                <h3 style="font-size: 10px; letter-spacing: 2px; margin-top: 0; color: #fff;">BULK DATA ENTRY</h3>
                 <table class="bulk-table">
                     <thead>
-                        <tr><th>NAME</th><th>GARAGE</th><th>ACTION</th></tr>
+                        <tr><th style="width:50%">NAME</th><th>GARAGE</th><th style="width:40px; text-align:center;">X</th></tr>
                     </thead>
                     <tbody id="bulkBody"></tbody>
                 </table>
@@ -138,24 +138,24 @@
                     <button class="btn" onclick="processBulk()">INITIALIZE AND SYNC</button>
                 </div>
             </div>
-            <button class="btn btn-danger" onclick="nukeDB()" style="font-size:10px;">PERMANENT SYSTEM WIPE</button>
+            <button class="btn btn-danger" onclick="nukeDB()" style="font-size:9px; padding:10px; width:auto;">WIPE DATABASE</button>
         </div>
     </div>
 
     <div class="overlay" id="previewOverlay">
         <div class="modal-sheet" onclick="event.stopPropagation()">
-            <h2 id="pTitle" style="margin-top:0; font-style: italic; letter-spacing: 2px;">VEHICLE PREVIEW</h2>
-            <img id="pImg" class="preview-img" src="">
-            <div id="pMeta" style="font-size: 11px; color: var(--accent); margin-bottom: 20px; letter-spacing: 2px;">GARAGE: DOWNTOWN</div>
+            <h2 id="pTitle" style="margin-top:0; font-style: italic;">PREVIEW</h2>
+            <img id="pImg" style="width:100%; height:220px; object-fit:cover; border: 1px solid var(--border); margin-bottom:15px;">
+            <div id="pMeta" style="font-size: 10px; color: var(--accent); margin-bottom: 15px; letter-spacing: 1px;"></div>
             <button class="btn" onclick="openEdit()">EDIT</button>
-            <button class="btn btn-danger" onclick="deleteFromPreview()">DELETE</button>
+            <button class="btn btn-danger" onclick="deleteFromPreview()" style="margin-top:10px;">DELETE</button>
             <button class="btn" style="background:none; color:white; margin-top:10px;" onclick="closeModal('previewOverlay')">CANCEL</button>
         </div>
     </div>
 
     <div class="overlay" id="editOverlay">
         <div class="modal-sheet" onclick="event.stopPropagation()">
-            <h2 id="modalTitle" style="margin-top:0; font-style: italic; letter-spacing: 2px;">NEW CAR ASSET</h2>
+            <h2 id="modalTitle" style="margin-top:0; font-style: italic;">NEW CAR ASSET</h2>
             <input type="text" id="vName" placeholder="MODEL NAME">
             <select id="vGarage">
                 <option value="North Sector">NORTH SECTOR</option>
@@ -164,10 +164,12 @@
                 <option value="Vinewood">VINEWOOD</option>
             </select>
             <input type="text" id="vTags" placeholder="TAGS (SUPER, SPORTS)">
+            
             <div class="upload-area" id="dropZone">
                 <span id="uploadLabel" class="upload-text">DRAG & DROP IMAGE OR CLICK</span>
                 <input type="file" id="vImg" accept="image/*" onchange="updateUploadLabel(this)">
             </div>
+
             <button class="btn" onclick="saveVehicle()">CONFIRM</button>
             <button class="btn" style="background:none; color:white; margin-top:10px;" onclick="closeModal('editOverlay')">CANCEL</button>
         </div>
@@ -176,7 +178,7 @@
     <div class="fab" onclick="openAdd()">+</div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('VCORE_FINAL_V5')) || [];
+        let db = JSON.parse(localStorage.getItem('VCORE_FINAL_V6')) || [];
         let activeIdx = null;
         let mapFilter = '';
 
@@ -184,20 +186,19 @@
             if(e.target.classList.contains('overlay')) { closeModal('previewOverlay'); closeModal('editOverlay'); }
         }
 
+        // DRAG & DROP
         const dropZone = document.getElementById('dropZone');
-        ['dragover', 'dragenter'].forEach(e => {
-            dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.add('dragover'); });
-        });
-        ['dragleave', 'dragend', 'drop'].forEach(e => {
-            dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.remove('dragover'); });
-        });
-        dropZone.addEventListener('drop', (ev) => {
-            const file = ev.dataTransfer.files[0];
-            if(file && file.type.startsWith('image/')) {
-                document.getElementById('vImg').files = ev.dataTransfer.files;
-                updateUploadLabel(document.getElementById('vImg'));
-            }
-        });
+        if(dropZone){
+            ['dragover', 'dragenter'].forEach(e => dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.add('dragover'); }));
+            ['dragleave', 'dragend', 'drop'].forEach(e => dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.remove('dragover'); }));
+            dropZone.addEventListener('drop', (ev) => {
+                const file = ev.dataTransfer.files[0];
+                if(file && file.type.startsWith('image/')) {
+                    document.getElementById('vImg').files = ev.dataTransfer.files;
+                    updateUploadLabel(document.getElementById('vImg'));
+                }
+            });
+        }
 
         function updateUploadLabel(input) {
             if(input.files[0]) document.getElementById('uploadLabel').innerText = `READY: ${input.files[0].name.toUpperCase()}`;
@@ -218,7 +219,7 @@
         }
 
         function promptBulkRows() {
-            const count = prompt("Rows to add?", "5");
+            const count = prompt("How many rows to add?", "5");
             if (count && !isNaN(count)) addRows(parseInt(count));
         }
 
@@ -226,7 +227,18 @@
             const tbody = document.getElementById('bulkBody');
             for(let i = 0; i < count; i++) {
                 const row = document.createElement('tr');
-                row.innerHTML = `<td><input type="text" class="table-input bulk-name" placeholder="Name..." tabindex="1"></td><td><select class="table-input bulk-garage" tabindex="-1"><option value="North Sector">NORTH</option><option value="Downtown Hub">DOWNTOWN</option><option value="Industrial">INDUSTRIAL</option><option value="Vinewood">VINEWOOD</option></select></td><td><button class="btn-danger" style="padding:5px 10px;" onclick="this.closest('tr').remove()" tabindex="-1">X</button></td>`;
+                row.innerHTML = `
+                    <td><input type="text" class="table-input bulk-name" placeholder="..." tabindex="1"></td>
+                    <td>
+                        <select class="table-input bulk-garage" tabindex="-1">
+                            <option value="North Sector">NORTH</option>
+                            <option value="Downtown Hub">DOWNTOWN</option>
+                            <option value="Industrial">INDUSTRIAL</option>
+                            <option value="Vinewood">VINEWOOD</option>
+                        </select>
+                    </td>
+                    <td><div class="btn-del-row" onclick="this.closest('tr').remove()" tabindex="-1">X</div></td>
+                `;
                 tbody.appendChild(row);
             }
         }
@@ -256,7 +268,7 @@
         function openEdit() {
             const v = db[activeIdx]; document.getElementById('modalTitle').innerText = "MODIFY DATA";
             document.getElementById('vName').value = v.name; document.getElementById('vTags').value = v.tags.join(', ');
-            document.getElementById('vGarage').value = v.garage; document.getElementById('uploadLabel').innerText = "REPLACE IMAGE";
+            document.getElementById('vGarage').value = v.garage;
             closeModal('previewOverlay'); document.getElementById('editOverlay').classList.add('active');
         }
 
@@ -274,7 +286,7 @@
 
         function deleteFromPreview() { if(confirm("DELETE?")) { db.splice(activeIdx, 1); sync(); closeModal('previewOverlay'); } }
 
-        function sync() { localStorage.setItem('VCORE_FINAL_V5', JSON.stringify(db)); render(); updateStats(); }
+        function sync() { localStorage.setItem('VCORE_FINAL_V6', JSON.stringify(db)); render(); updateStats(); }
         function render() {
             const grid = document.getElementById('grid'); grid.innerHTML = '';
             const query = document.getElementById('searchInput').value.toLowerCase();
@@ -292,10 +304,10 @@
             const a = document.createElement('a'); a.href = url; a.download = "VCORE_BACKUP.json"; a.click();
         }
         function importDB(e) {
-            const reader = new FileReader(); reader.onload = (ev) => { db = JSON.parse(ev.target.result); sync(); alert("RESTORED"); };
+            const reader = new FileReader(); reader.onload = (ev) => { db = JSON.parse(ev.target.result); sync(); };
             reader.readAsText(e.target.files[0]);
         }
-        function nukeDB() { if(confirm("WIPE?")) { db = []; sync(); } }
+        function nukeDB() { if(confirm("WIPE EVERYTHING?")) { db = []; sync(); } }
         const toBase64 = file => new Promise((res) => {
             const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result);
         });
