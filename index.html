@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Vehicle Vault</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background: #111;
+        color: #f0f0f0;
+        overflow-x: hidden;
+    }
+    header {
+        background: #0a0a0a;
+        padding: 12px;
+        text-align: center;
+        font-size: 1.6em;
+        font-weight: bold;
+        color: #f4d03f;
+        text-shadow: 1px 1px 2px #000;
+    }
+    button {
+        background: #f4d03f;
+        border: none;
+        padding: 10px 15px;
+        margin: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: 0.2s;
+    }
+    button:hover {
+        background: #d4ac0d;
+    }
+    input, select, textarea {
+        padding: 8px;
+        margin: 5px 0;
+        border-radius: 5px;
+        border: none;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .container {
+        padding: 10px;
+    }
+    /* Swipe Gallery */
+    .gallery-container {
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+    }
+    .gallery {
+        display: flex;
+        transition: transform 0.3s ease;
+        touch-action: pan-y;
+    }
+    .car-card {
+        min-width: 80%;
+        max-width: 80%;
+        margin: 10px auto;
+        background: #222;
+        border: 1px solid #333;
+        border-radius: 10px;
+        padding: 10px;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        transition: transform 0.3s;
+    }
+    .car-card img {
+        width: 100%;
+        border-radius: 5px;
+        max-height: 160px;
+        object-fit: cover;
+    }
+    .car-card h3 {
+        margin: 5px 0;
+        color: #f4d03f;
+    }
+    .car-card p {
+        margin: 2px 0;
+        font-size: 0.9em;
+    }
+    .search-bar {
+        margin-bottom: 10px;
+    }
+    @media(max-width: 600px){
+        .car-card { min-width: 90%; max-width: 90%; }
+    }
+    .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>The Vehicle Vault</header>
+<div class="container">
+
+    <!-- Add/Edit Car Form -->
+    <div id="form-container">
+        <h2>Add / Edit Car</h2>
+        <input type="text" id="car-name" placeholder="Car Name">
+        <input type="text" id="car-garage" placeholder="Garage / Location">
+        <input type="text" id="car-tags" placeholder="Tags (comma-separated)">
+        <textarea id="car-notes" placeholder="Notes"></textarea>
+        <input type="file" id="car-image" accept="image/*">
+        <button id="save-car-btn">Save Car</button>
+        <button id="cancel-edit-btn" class="hidden">Cancel Edit</button>
+    </div>
+
+    <!-- Search and Filters -->
+    <div id="search-container">
+        <input type="text" id="search-input" class="search-bar" placeholder="Search by Name, Garage, Tag or Notes">
+        <select id="garage-filter">
+            <option value="">Filter by Garage</option>
+        </select>
+        <select id="tag-filter">
+            <option value="">Filter by Tag</option>
+        </select>
+        <button id="export-btn">Export JSON</button>
+        <input type="file" id="import-json" accept="application/json">
+    </div>
+
+    <!-- Swipeable Gallery -->
+    <div class="gallery-container">
+        <div id="gallery" class="gallery"></div>
+    </div>
+
+</div>
+
+<script>
+let cars = [];
+if(localStorage.getItem('gtaCars')){
+    cars = JSON.parse(localStorage.getItem('gtaCars'));
+}
+let editId = null;
+let currentIndex = 0;
+
+const gallery = document.getElementById('gallery');
+const nameInput = document.getElementById('car-name');
+const garageInput = document.getElementById('car-garage');
+const tagsInput = document.getElementById('car-tags');
+const notesInput = document.getElementById('car-notes');
+const imageInput = document.getElementById('car-image');
+
+const searchInput = document.getElementById('search-input');
+const garageFilter = document.getElementById('garage-filter');
+const tagFilter = document.getElementById('tag-filter');
+
+function saveCars(){
+    localStorage.setItem('gtaCars', JSON.stringify(cars));
+    renderGallery();
+    updateFilters();
+}
+
+function renderGallery(){
+    const searchTerm = searchInput.value.toLowerCase();
+    const garageF = garageFilter.value;
+    const tagF = tagFilter.value;
+
+    const filtered = cars.filter(car => {
+        const carTags = car.tags.join(',').toLowerCase();
+        return (car.name.toLowerCase().includes(searchTerm) ||
+                car.garage.toLowerCase().includes(searchTerm) ||
+                carTags.includes(searchTerm) ||
+                car.notes.toLowerCase().includes(searchTerm)) &&
+                (garageF === '' || car.garage === garageF) &&
+                (tagF === '' || car.tags.includes(tagF));
+    });
+
+    gallery.innerHTML = '';
+    filtered.forEach(car => {
+        const card = document.createElement('div');
+        card.className = 'car-card';
+        card.innerHTML = `
+            ${car.image ? `<img src="${car.image}" alt="${car.name}">` : `<div style="height:160px;background:#333;border-radius:5px;"></div>`}
+            <h3>${car.name}</h3>
+            <p><strong>Garage:</strong> ${car.garage}</p>
+            <p><strong>Tags:</strong> ${car.tags.join(', ')}</p>
+            <p>${car.notes}</p>
+            <button onclick="editCar(${car.id})">Edit</button>
+            <button onclick="deleteCar(${car.id})">Delete</button>
+        `;
+        gallery.appendChild(card);
+    });
+
+    // Adjust swipe position
+    gallery.style.transform = `translateX(-${currentIndex*100}%)`;
+}
+
+function updateFilters(){
+    const garages = [...new Set(cars.map(c => c.garage))];
+    const tags = [...new Set(cars.flatMap(c => c.tags))];
+
+    garageFilter.innerHTML = `<option value="">Filter by Garage</option>`;
+    garages.forEach(g => {
+        const option = document.createElement('option');
+        option.value = g; option.textContent = g;
+        garageFilter.appendChild(option);
+    });
+
+    tagFilter.innerHTML = `<option value="">Filter by Tag</option>`;
+    tags.forEach(t => {
+        const option = document.createElement('option');
+        option.value = t; option.textContent = t;
+        tagFilter.appendChild(option);
+    });
+}
+
+function editCar(id){
+    const car = cars.find(c => c.id === id);
+    if(car){
+        editId = id;
+        nameInput.value = car.name;
+        garageInput.value = car.garage;
+        tagsInput.value = car.tags.join(', ');
+        notesInput.value = car.notes;
+        document.getElementById('cancel-edit-btn').classList.remove('hidden');
+    }
+}
+
+function deleteCar(id){
+    if(confirm("Delete this car?")){
+        cars = cars.filter(c => c.id !== id);
+        saveCars();
+    }
+}
+
+// ----- Save Car -----
+document.getElementById('save-car-btn').addEventListener('click', () => {
+    const name = nameInput.value.trim();
+    const garage = garageInput.value.trim();
+    const tags = tagsInput.value.split(',').map(t => t.trim()).filter(t => t);
+    const notes = notesInput.value.trim();
+
+    if(!name || !garage){ alert("Car Name and Garage are required"); return; }
+
+    const reader = new FileReader();
+    reader.onload = function(e){
+        const imageData = e.target.result;
+        if(editId){
+            const car = cars.find(c => c.id === editId);
+            car.name = name; car.garage = garage; car.tags = tags; car.notes = notes;
+            if(imageData) car.image = imageData;
+            editId = null;
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        } else {
+            cars.push({id: Date.now(), name, garage, tags, notes, image: imageData});
+        }
+        nameInput.value = garageInput.value = tagsInput.value = notesInput.value = '';
+        imageInput.value = '';
+        saveCars();
+    }
+    if(imageInput.files[0]){
+        reader.readAsDataURL(imageInput.files[0]);
+    } else {
+        reader.onload({target:{result:''}});
+    }
+});
+
+// ----- Cancel Edit -----
+document.getElementById('cancel-edit-btn').addEventListener('click', ()=>{
+    editId = null;
+    document.getElementById('cancel-edit-btn').classList.add('hidden');
+    nameInput.value = garageInput.value = tagsInput.value = notesInput.value = '';
+    imageInput.value = '';
+});
+
+// ----- Search & Filters -----
+searchInput.addEventListener('input', renderGallery);
+garageFilter.addEventListener('change', renderGallery);
+tagFilter.addEventListener('change', renderGallery);
+
+// ----- Export/Import -----
+document.getElementById('export-btn').addEventListener('click', ()=>{
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cars));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "vehicle_vault_backup.json");
+    dlAnchor.click();
+});
+
+document.getElementById('import-json').addEventListener('change', (event)=>{
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e){
+        try{
+            const imported = JSON.parse(e.target.result);
+            if(Array.isArray(imported)){
+                cars = imported;
+                saveCars();
+                alert("Import successful!");
+            }
+        }catch(err){ alert("Invalid JSON file"); }
+    }
+    reader.readAsText(file);
+});
+
+// ----- Swipe functionality -----
+let startX = 0;
+let isDragging = false;
+
+gallery.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+});
+gallery.addEventListener('touchmove', e => {
+    if(!isDragging) return;
+    const dx = e.touches[0].clientX - startX;
+    gallery.style.transform = `translateX(${-currentIndex*100 + dx/gallery.offsetWidth*100}%)`;
+});
+gallery.addEventListener('touchend', e => {
+    isDragging = false;
+    const dx = e.changedTouches[0].clientX - startX;
+    if(dx < -50 && currentIndex < cars.length-1) currentIndex++;
+    if(dx > 50 && currentIndex > 0) currentIndex--;
+    renderGallery();
+});
+
+// ----- Initial render -----
+renderGallery();
+updateFilters();
+</script>
+</body>
+</html>
