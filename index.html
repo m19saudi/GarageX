@@ -40,7 +40,6 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* GRID */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding-bottom: 100px; }
         .card { background: var(--panel); border: 1px solid var(--border); height: 180px; position: relative; overflow: hidden; cursor: pointer; transition: 0.3s; }
         .card:hover { border-color: var(--accent); transform: scale(1.02); }
@@ -49,40 +48,43 @@
         .card-name { font-weight: 900; text-transform: uppercase; font-size: 1rem; }
         .card-meta { font-size: 9px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* NETWORK MAP */
-        .map-wrapper { height: 500px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); position: relative; background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; overflow: hidden; }
+        .map-wrapper { height: 500px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); position: relative; background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; }
         .map-node { position: absolute; width: 60px; height: 60px; border: 2px solid var(--accent); background: rgba(0, 0, 0, 0.8); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; z-index: 50; transition: 0.3s; }
         .map-node.rearrange-active { border-color: var(--danger); box-shadow: 0 0 10px var(--danger); }
 
-        /* BUTTONS */
-        .btn { background: #000; color: var(--accent); border: 1px solid var(--accent); padding: 15px; font-weight: 900; text-transform: uppercase; cursor: pointer; width: 100%; letter-spacing: 1px; transition: 0.3s; }
+        .btn { background: #000; color: var(--accent); border: 1px solid var(--accent); padding: 15px; font-weight: 900; text-transform: uppercase; cursor: pointer; width: 100%; letter-spacing: 1px; transition: 0.3s; outline: none; }
         .btn:hover { background: var(--accent); color: #000; }
         
         .btn-danger-ui { background: #000; color: var(--danger); border: 1px solid var(--danger); padding: 20px; font-weight: 900; text-transform: uppercase; cursor: pointer; width: 100%; transition: 0.3s; }
         .btn-danger-ui:hover { background: var(--danger); color: #000; }
 
-        /* RESET FILTER UI */
-        .filter-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 255, 0.1); border: 1px solid var(--accent); padding: 5px 12px; font-size: 10px; color: var(--accent); border-radius: 20px; letter-spacing: 1px; }
-        .reset-icon { cursor: pointer; font-weight: 900; font-size: 14px; line-height: 1; transition: 0.2s; }
-        .reset-icon:hover { transform: scale(1.3); color: white; }
+        .filter-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 255, 0.1); border: 1px solid var(--accent); padding: 5px 12px; font-size: 10px; color: var(--accent); border-radius: 20px; }
 
-        /* DATA SECTION */
         .data-section { background: rgba(255,255,255,0.03); padding: 25px; border-left: 4px solid var(--accent); margin-bottom: 25px; }
         .bulk-table { width: 100%; border-collapse: collapse; }
-        .bulk-table td { padding: 5px; border-bottom: 1px solid #111; }
-        .table-input { background: #111; border: 1px solid #222; color: white; padding: 10px; width: 100%; font-size: 13px; }
+        .table-input { background: #111; border: 1px solid #222; color: white; padding: 10px; width: 100%; font-size: 13px; outline: none; }
 
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .overlay.active { display: flex; }
         .modal-sheet { background: #080808; width: 100%; max-width: 500px; border: 1px solid var(--accent); padding: 30px; }
 
         .upload-area { position: relative; border: 2px dashed #333; padding: 30px; text-align: center; cursor: pointer; margin-bottom: 20px; }
-        .upload-area:hover { border-color: var(--accent); }
         .upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 10; }
 
         input, select { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 12px; margin-bottom: 15px; outline: none; }
         
-        .fab { position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 32px; cursor: pointer; z-index: 100; box-shadow: 0 0 20px var(--accent-glow); }
+        .fab { 
+            position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; 
+            background: var(--accent); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            color: black; cursor: pointer; z-index: 100; 
+            box-shadow: 0 0 20px var(--accent-glow);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .fab span { font-size: 40px; font-weight: 300; line-height: 1; margin-top: -4px; pointer-events: none; }
+        .fab:hover { transform: rotate(180deg) scale(1.1); }
+
+        .btn-del-row { color: var(--danger); border: 1px solid var(--danger); background: transparent; width: 30px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 900; }
     </style>
 </head>
 <body onclick="checkClickOutside(event)">
@@ -99,7 +101,7 @@
 
         <div id="screen-garage" class="screen active">
             <div style="display:flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                <input type="text" id="searchInput" placeholder="SEARCH ASSET DATABASE..." oninput="render()" style="background: transparent; border: none; border-bottom: 1px solid var(--border); font-size: 18px; padding: 10px 0; margin-bottom: 0; flex: 1;">
+                <input type="text" id="searchInput" placeholder="SEARCH ASSET DATABASE..." oninput="render()" style="background: transparent; border: none; border-bottom: 1px solid var(--border); font-size: 18px; padding: 10px 0; margin-bottom: 0; flex: 1; color: white; outline: none;">
                 <div id="filterArea"></div>
             </div>
             <div id="grid" class="grid"></div>
@@ -111,14 +113,12 @@
                 <button id="rearrangeBtn" class="btn" style="width:auto; padding:10px 20px;" onclick="toggleRearrange()">REARRANGE: OFF</button>
             </div>
             <div class="map-wrapper" id="map"></div>
-            <p style="text-align:center; font-size:10px; color:var(--text-dim); margin-top:20px; letter-spacing:4px;">CHOOSE A GARAGE TO EXPLORE</p>
         </div>
 
         <div id="screen-data" class="screen">
             <div class="data-section">
                 <div style="font-size: 2.5rem; font-weight: 900; color: var(--accent);" id="stat-total">00</div>
-                <div style="font-size: 10px; color: var(--text-dim); letter-spacing: 2px; margin-bottom:20px;">TOTAL ASSETS DETECTED</div>
-                
+                <div style="font-size: 10px; color: var(--text-dim); letter-spacing: 2px; margin-bottom:20px;">TOTAL ASSETS</div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                     <button class="btn" onclick="document.getElementById('importFile').click()">IMPORT DATABASE</button>
                     <button class="btn" onclick="exportBackup()">EXPORT DATABASE</button>
@@ -132,8 +132,8 @@
                     <tbody id="bulkBody"></tbody>
                 </table>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
-                    <button class="btn" onclick="addRows(5)" style="font-size:11px;">+ NEW ROWS</button>
-                    <button class="btn" onclick="processBulk()" style="font-size:11px;">INITIALIZE AND SYNC</button>
+                    <button class="btn" onclick="addRows(5)">+ NEW ROWS</button>
+                    <button class="btn" onclick="processBulk()">INITIALIZE AND SYNC</button>
                 </div>
             </div>
             <button class="btn-danger-ui" onclick="nukeDB()">PERMANENT SYSTEM DELETE</button>
@@ -142,19 +142,19 @@
 
     <div class="overlay" id="editOverlay">
         <div class="modal-sheet" onclick="event.stopPropagation()">
-            <h2 style="margin-top:0; font-style: italic; color: var(--accent);">NEW ASSET ENTRY</h2>
+            <h2 style="margin-top:0; font-style: italic; color: var(--accent);">NEW CAR ENTRY</h2>
             <input type="text" id="vName" placeholder="MODEL NAME">
             <select id="vGarage"></select>
             <div class="upload-area">
                 <span id="uploadLabel" style="font-size:10px; color:#777;">DRAG & DROP IMAGE OR CLICK</span>
                 <input type="file" id="vImg" accept="image/*" onchange="updateUploadLabel(this)">
             </div>
-            <button class="btn" onclick="saveVehicle()">CONFIRM SYNC</button>
+            <button class="btn" onclick="saveVehicle()">CONFIRM</button>
             <button class="btn" style="margin-top:10px; border-color:#333; color:#777;" onclick="closeModal('editOverlay')">CANCEL</button>
         </div>
     </div>
 
-    <div class="fab" onclick="openAdd()">+</div>
+    <div class="fab" onclick="openAdd()"><span>+</span></div>
 
     <script>
         let db = JSON.parse(localStorage.getItem('VCORE_DB')) || [];
@@ -175,7 +175,7 @@
             document.getElementById('screen-' + id).classList.add('active');
             el.classList.add('active');
             if(id === 'network') renderMap();
-            if(id === 'data') updateStats();
+            if(id === 'data') { updateStats(); if(document.getElementById('bulkBody').children.length === 0) addRows(1); }
         }
 
         function renderMap() {
@@ -185,10 +185,9 @@
                 node.className = 'map-node' + (rearrangeMode ? ' rearrange-active' : '');
                 node.style.left = s.x + '%'; node.style.top = s.y + '%';
                 node.innerText = s.id;
-                
                 node.onclick = () => {
                     if(rearrangeMode) {
-                        if(confirm(`DELETE SECTOR "${s.name}"?`)) {
+                        if(confirm(`DELETE ${s.name}?`)) {
                             db = db.filter(v => v.garage !== s.name);
                             sectors.splice(idx, 1);
                             saveSectors(); sync(); renderMap();
@@ -199,10 +198,7 @@
                         render();
                     }
                 };
-                if(rearrangeMode) {
-                    node.draggable = true;
-                    node.ondragstart = (e) => e.dataTransfer.setData('idx', idx);
-                }
+                if(rearrangeMode) { node.draggable = true; node.ondragstart = (e) => e.dataTransfer.setData('idx', idx); }
                 map.appendChild(node);
             });
         }
@@ -218,94 +214,86 @@
 
         function render() {
             const grid = document.getElementById('grid'); grid.innerHTML = '';
-            const filterArea = document.getElementById('filterArea');
             const query = document.getElementById('searchInput').value.toLowerCase();
-            
-            // Render Filter Pill
-            filterArea.innerHTML = mapFilter ? `<div class="filter-pill"><span>${mapFilter.toUpperCase()}</span><span class="reset-icon" onclick="resetSystem()">×</span></div>` : '';
+            document.getElementById('filterArea').innerHTML = mapFilter ? `<div class="filter-pill"><span>${mapFilter}</span><span style="margin-left:8px; cursor:pointer;" onclick="resetSystem()">×</span></div>` : '';
 
-            db.filter(v => {
-                const matchName = v.name.toLowerCase().includes(query);
-                const matchFilter = mapFilter === '' || v.garage === mapFilter;
-                return matchName && matchFilter;
-            }).forEach((v) => {
+            db.filter(v => (v.name.toLowerCase().includes(query)) && (mapFilter === '' || v.garage === mapFilter)).forEach((v) => {
                 const s = sectors.find(sec => sec.name === v.garage);
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <img src="${v.img || 'https://via.placeholder.com/300x150/111/00f2ff?text=NO+IMAGE'}" class="card-img">
-                    <div class="card-info">
-                        <div class="card-meta">${v.garage} / ${s ? s.id : '??'}</div>
-                        <div class="card-name">${v.name}</div>
-                    </div>`;
+                const card = document.createElement('div'); card.className = 'card';
+                card.innerHTML = `<img src="${v.img || 'https://via.placeholder.com/300x150/111/00f2ff?text=NO+IMAGE'}" class="card-img"><div class="card-info"><div class="card-meta">${v.garage} / ${s ? s.id : '??'}</div><div class="card-name">${v.name}</div></div>`;
                 grid.appendChild(card);
             });
         }
 
-        /* DATA STORAGE & HELPERS */
         function sync() { localStorage.setItem('VCORE_DB', JSON.stringify(db)); render(); updateStats(); }
         function saveSectors() { localStorage.setItem('VCORE_SECTORS', JSON.stringify(sectors)); }
         function updateStats() { document.getElementById('stat-total').innerText = db.length.toString().padStart(2, '0'); }
-        function addSector() {
-            const name = prompt("Garage Name:").toUpperCase();
-            const id = prompt("Code (e.g. S-01):").toUpperCase();
-            if(name && id) { sectors.push({ id, name, x: 40, y: 40 }); saveSectors(); renderMap(); }
+        
+        function addSector() { 
+            const n = prompt("Garage Name:").toUpperCase(); 
+            const i = prompt("Code:").toUpperCase(); 
+            if(n && i) { sectors.push({id:i, name:n, x:45, y:45}); saveSectors(); renderMap(); }
         }
-        function toggleRearrange() {
-            rearrangeMode = !rearrangeMode;
-            document.getElementById('rearrangeBtn').innerText = rearrangeMode ? "REARRANGE: ON" : "REARRANGE: OFF";
-            document.getElementById('rearrangeBtn').style.color = rearrangeMode ? "var(--danger)" : "var(--accent)";
-            renderMap();
-        }
-        function addRows(count) {
-            const tbody = document.getElementById('bulkBody');
-            for(let i = 0; i < count; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td><input type="text" class="table-input bulk-name" placeholder="Model..."></td>
-                    <td><select class="table-input bulk-garage">${sectors.map(s => `<option value="${s.name}">${s.id}</option>`).join('')}</select></td>
-                    <td onclick="this.closest('tr').remove()" style="color:var(--danger); text-align:center; cursor:pointer; font-weight:900;">X</td>`;
-                tbody.appendChild(row);
+
+        function toggleRearrange() { rearrangeMode = !rearrangeMode; document.getElementById('rearrangeBtn').innerText = rearrangeMode ? "REARRANGE: ON" : "REARRANGE: OFF"; renderMap(); }
+        
+        function addRows(c) { 
+            const b = document.getElementById('bulkBody'); 
+            for(let i=0; i<c; i++){
+                const r = document.createElement('tr');
+                r.innerHTML = `<td><input type="text" class="table-input bulk-name" placeholder="Model..."></td><td><select class="table-input bulk-garage">${sectors.map(s=>`<option value="${s.name}">${s.id}</option>`).join('')}</select></td><td style="width:40px;"><div class="btn-del-row" onclick="this.closest('tr').remove()">×</div></td>`;
+                b.appendChild(r);
             }
         }
+
         function processBulk() {
-            const names = document.querySelectorAll('.bulk-name');
-            const garages = document.querySelectorAll('.bulk-garage');
-            names.forEach((n, i) => { if(n.value.trim()) db.push({ name: n.value.trim(), garage: garages[i].value, img: '' }); });
-            sync(); document.getElementById('bulkBody').innerHTML = ''; resetSystem();
+            document.querySelectorAll('.bulk-name').forEach((n, i) => { if(n.value.trim()) db.push({ name: n.value.trim(), garage: document.querySelectorAll('.bulk-garage')[i].value, img: '' }); });
+            sync(); document.getElementById('bulkBody').innerHTML = ''; addRows(1); resetSystem();
         }
+
         function openAdd() { 
             if(sectors.length === 0) return alert("ADD A GARAGE FIRST!");
             document.getElementById('vGarage').innerHTML = sectors.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
             document.getElementById('editOverlay').classList.add('active'); 
         }
+
         async function saveVehicle() {
-            const name = document.getElementById('vName').value.trim();
-            const file = document.getElementById('vImg').files[0];
-            let img = file ? await toBase64(file) : '';
-            if(name) { db.push({ name, garage: document.getElementById('vGarage').value, img }); sync(); closeModal('editOverlay'); }
+            const nameInput = document.getElementById('vName');
+            const fileInput = document.getElementById('vImg');
+            const garageSelect = document.getElementById('vGarage');
+            
+            const n = nameInput.value.trim(); 
+            const f = fileInput.files[0];
+            let i = f ? await toBase64(f) : '';
+            
+            if(n) { 
+                db.push({ name: n, garage: garageSelect.value, img: i }); 
+                sync(); 
+                
+                // RESET FIELDS
+                nameInput.value = '';
+                fileInput.value = '';
+                document.getElementById('uploadLabel').innerText = 'DRAG & DROP IMAGE OR CLICK';
+                
+                closeModal('editOverlay'); 
+            }
         }
+
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function exportBackup() {
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([JSON.stringify({db, sectors})], {type: "application/json"}));
-            a.download = "VCORE_BACKUP.json"; a.click();
-        }
-        function importDB(e) {
-            const reader = new FileReader();
-            reader.onload = (ev) => { 
-                const data = JSON.parse(ev.target.result);
-                db = data.db || []; sectors = data.sectors || [];
-                sync(); saveSectors(); alert("RESTORED");
-            };
-            reader.readAsText(e.target.files[0]);
-        }
-        function nukeDB() { if(confirm("WIPE SYSTEM?")) { db = []; sectors = []; sync(); saveSectors(); } }
-        const toBase64 = file => new Promise((res) => {
-            const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result);
+        function exportBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({db, sectors})], {type: "application/json"})); a.download = "VCORE.json"; a.click(); }
+        function importDB(e) { const reader = new FileReader(); reader.onload = (ev) => { const d = JSON.parse(ev.target.result); db = d.db || []; sectors = d.sectors || []; sync(); saveSectors(); alert("SYNCED"); }; reader.readAsText(e.target.files[0]); }
+        function nukeDB() { if(confirm("WIPE SYSTEM?")) { db = []; sectors = []; sync(); saveSectors(); document.getElementById('bulkBody').innerHTML = ''; addRows(1); } }
+        
+        const toBase64 = file => new Promise((res) => { 
+            const r = new FileReader(); 
+            r.readAsDataURL(file); 
+            r.onload = () => res(r.result); 
         });
+
         function checkClickOutside(e) { if(e.target.classList.contains('overlay')) closeModal('editOverlay'); }
         function updateUploadLabel(i) { if(i.files[0]) document.getElementById('uploadLabel').innerText = i.files[0].name.toUpperCase(); }
 
+        addRows(1);
         render();
     </script>
 </body>
