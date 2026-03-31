@@ -3,119 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Garage V3 Pro</title>
+<title>Garage V4</title>
 
 <style>
 :root{
---bg:#0a0a0b;
---card:rgba(255,255,255,0.05);
---glass:rgba(255,255,255,0.08);
---accent:#d4af37;
+--bg:#050506;
+--card:rgba(255,255,255,0.04);
+--glass:rgba(255,255,255,0.06);
 --neon:#00ffc6;
---text:#fff;
+--accent:#d4af37;
+--text:#ffffff;
 }
 
 *{box-sizing:border-box;font-family:system-ui;}
-body{margin:0;background:var(--bg);color:var(--text);overflow-x:hidden}
+body{
+margin:0;
+background:radial-gradient(circle at top,#0a0a0a,#050506);
+color:var(--text);
+overflow-x:hidden;
+}
 
 /* HEADER */
 header{
 padding:16px;
-font-weight:bold;
+font-size:18px;
+letter-spacing:1px;
 display:flex;
 justify-content:space-between;
-border-bottom:1px solid #222;
+border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
 /* SCREENS */
 .wrapper{
 display:flex;
-width:200%;
-transition:0.4s ease;
+width:300%;
+transition:.5s cubic-bezier(.77,0,.18,1);
 }
 .screen{
 width:100%;
-padding-bottom:80px;
+padding-bottom:90px;
 }
 
 /* SEARCH */
-.search{padding:10px}
+.search{padding:12px;}
 .search input{
 width:100%;
-padding:12px;
-border-radius:12px;
+padding:14px;
+border-radius:14px;
 border:none;
-background:#1a1a1d;
+background:rgba(255,255,255,0.05);
 color:white;
-}
-
-/* FILTER */
-.filters{
-display:flex;
-flex-wrap:wrap;
-gap:6px;
-padding:10px;
-}
-.chip{
-padding:6px 10px;
-border-radius:20px;
-background:#222;
-font-size:12px;
-cursor:pointer;
-}
-.chip.active{
-background:var(--neon);
-color:black;
+backdrop-filter:blur(10px);
 }
 
 /* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:12px;
-padding:10px;
+gap:14px;
+padding:12px;
 }
 
 .card{
 background:var(--card);
-backdrop-filter:blur(10px);
-border-radius:16px;
+border-radius:18px;
 overflow:hidden;
-transition:.25s;
+backdrop-filter:blur(12px);
 border:1px solid rgba(255,255,255,0.08);
+transition:.3s;
+position:relative;
 }
-.card:active{transform:scale(.96)}
+.card:active{
+transform:scale(.96);
+box-shadow:0 0 15px var(--neon);
+}
 
 .card img{
 width:100%;
 height:120px;
 object-fit:cover;
-background:#111;
 }
 
-/* EMPTY */
-.empty{
+.card::after{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(120deg,transparent,rgba(0,255,200,.15),transparent);
+opacity:0;
+transition:.3s;
+}
+.card:hover::after{opacity:1}
+
+/* MAP GRID */
+.map{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+padding:12px;
+}
+.zone{
+padding:30px 10px;
 text-align:center;
-padding:40px;
-color:#777;
+border-radius:16px;
+background:var(--glass);
+cursor:pointer;
+position:relative;
+}
+.zone.active{
+outline:2px solid var(--neon);
+}
+.zone span{
+font-size:12px;
+color:#aaa;
 }
 
 /* FAB */
 .fab{
 position:fixed;
-bottom:80px;
+bottom:90px;
 right:20px;
-width:60px;height:60px;
+width:65px;height:65px;
 border-radius:50%;
 border:none;
-background:linear-gradient(135deg,var(--accent),var(--neon));
-font-size:30px;
+font-size:32px;
 color:black;
-animation:pulse 2s infinite;
-}
-@keyframes pulse{
-0%,100%{box-shadow:0 0 10px var(--neon);}
-50%{box-shadow:0 0 25px var(--neon);}
+background:linear-gradient(135deg,var(--accent),var(--neon));
+box-shadow:0 0 20px var(--neon);
 }
 
 /* NAV */
@@ -124,91 +137,91 @@ position:fixed;
 bottom:0;
 width:100%;
 display:flex;
-background:#111;
-border-top:1px solid #222;
+background:#0b0b0c;
+border-top:1px solid rgba(255,255,255,0.1);
 }
 nav div{
 flex:1;
 text-align:center;
-padding:12px;
+padding:14px;
 cursor:pointer;
 }
 nav .active{color:var(--neon)}
 
-/* MODALS */
+/* MODAL */
 .modal{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.8);
+background:rgba(0,0,0,.85);
 display:none;
 justify-content:center;
 align-items:flex-end;
 }
 .modal-content{
-background:#111;
+background:#0b0b0c;
 width:100%;
 max-height:90%;
 padding:16px;
 border-radius:20px 20px 0 0;
-animation:slideUp .3s;
+animation:slide .3s;
 }
-@keyframes slideUp{
+@keyframes slide{
 from{transform:translateY(100%)}
 to{transform:translateY(0)}
 }
 
-/* INPUT */
 input,textarea{
 width:100%;
+padding:12px;
 margin-bottom:10px;
-padding:10px;
-border-radius:10px;
+border-radius:12px;
 border:none;
-background:#1f1f22;
+background:rgba(255,255,255,0.05);
 color:white;
 }
 
 button{
 width:100%;
-padding:10px;
-margin-top:5px;
+padding:12px;
 border:none;
-border-radius:10px;
+border-radius:12px;
+margin-top:5px;
 background:var(--accent);
 }
 
-/* STATS */
-.stat{
-background:var(--glass);
-margin:10px;
-padding:12px;
-border-radius:12px;
+/* DETAIL */
+.detail img{
+width:100%;
+border-radius:14px;
+margin-bottom:10px;
 }
-.bar{
-height:6px;
-background:var(--neon);
-margin-top:5px;
-border-radius:6px;
+
+/* EMPTY */
+.empty{
+text-align:center;
+padding:50px;
+color:#777;
 }
 </style>
 </head>
 
 <body>
 
-<header>🚗 Garage V3 Pro</header>
+<header>🚗 GARAGE V4</header>
 
 <div class="wrapper" id="wrapper">
 
 <!-- GARAGE -->
 <div class="screen">
 <div class="search">
-<input id="search" placeholder="Search...">
+<input id="search" placeholder="Search vehicles...">
+</div>
+<div id="grid" class="grid"></div>
 </div>
 
-<div class="filters" id="filters"></div>
-
-<div id="grid" class="grid"></div>
-
+<!-- MAP -->
+<div class="screen">
+<div class="map" id="map"></div>
 </div>
 
 <!-- STATS -->
@@ -218,10 +231,10 @@ border-radius:6px;
 
 </div>
 
-<!-- NAV -->
 <nav>
 <div class="active" onclick="go(0,this)">Garage</div>
-<div onclick="go(1,this)">Stats</div>
+<div onclick="go(1,this)">Map</div>
+<div onclick="go(2,this)">Stats</div>
 </nav>
 
 <button class="fab" onclick="openForm()">+</button>
@@ -230,7 +243,7 @@ border-radius:6px;
 <div class="modal" id="formModal">
 <div class="modal-content">
 <input id="name" placeholder="Name">
-<input id="garage" placeholder="Garage">
+<input id="garage" placeholder="Garage Zone (e.g. A1)">
 <input id="tags" placeholder="Tags">
 <textarea id="notes"></textarea>
 <input type="file" id="img">
@@ -242,8 +255,8 @@ border-radius:6px;
 
 <!-- DETAIL -->
 <div class="modal" id="detailModal">
-<div class="modal-content">
-<img id="dImg" style="width:100%;border-radius:10px">
+<div class="modal-content detail">
+<img id="dImg">
 <h2 id="dName"></h2>
 <p id="dGarage"></p>
 <p id="dTags"></p>
@@ -256,80 +269,68 @@ border-radius:6px;
 
 <script>
 let cars=JSON.parse(localStorage.getItem("cars")||"[]");
-let activeTag=null,current=null,editIndex=null;
-
-function vibrate(){if(navigator.vibrate) navigator.vibrate(30);}
-
-function saveStorage(){
-localStorage.setItem("cars",JSON.stringify(cars));
-}
-
-function render(){
-let grid=document.getElementById("grid");
-let s=search.value.toLowerCase();
-grid.innerHTML="";
-
-let f=cars.filter(c=>
-(!activeTag||c.tags.includes(activeTag)) &&
-(c.name+c.garage+c.tags+c.notes).toLowerCase().includes(s)
-);
-
-if(!f.length){
-grid.innerHTML=`<div class="empty">No cars yet 🚗</div>`;
-}
-
-f.forEach((c,i)=>{
-let d=document.createElement("div");
-d.className="card";
-d.innerHTML=`
-<img src="${c.image||''}">
-<div style="padding:10px">
-<b>${c.name}</b><br>
-<small>${c.garage}</small>
-</div>`;
-d.onclick=()=>{openDetail(i);vibrate();}
-grid.appendChild(d);
-});
-
-renderFilters();
-renderStats();
-saveStorage();
-}
-
-function renderFilters(){
-let tags=[...new Set(cars.flatMap(c=>c.tags.split(",")))];
-filters.innerHTML="";
-tags.forEach(t=>{
-let el=document.createElement("div");
-el.className="chip"+(activeTag===t?" active":"");
-el.innerText=t;
-el.onclick=()=>{activeTag=activeTag===t?null:t;render();}
-filters.appendChild(el);
-});
-}
-
-/* STATS */
-function renderStats(){
-let s=document.getElementById("stats");
-let g={};
-cars.forEach(c=>g[c.garage]=(g[c.garage]||0)+1);
-
-s.innerHTML=`<div class="stat">Total: ${cars.length}</div>`;
-for(let k in g){
-let pct=(g[k]/cars.length)*100;
-s.innerHTML+=`
-<div class="stat">
-${k} (${g[k]})
-<div class="bar" style="width:${pct}%"></div>
-</div>`;
-}
-}
+let current=null,activeZone=null;
 
 /* NAV */
 function go(i,el){
 wrapper.style.transform=`translateX(-${i*100}%)`;
 document.querySelectorAll("nav div").forEach(d=>d.classList.remove("active"));
 el.classList.add("active");
+}
+
+/* RENDER */
+function render(){
+let grid=document.getElementById("grid");
+let s=search.value.toLowerCase();
+grid.innerHTML="";
+
+let f=cars.filter(c=>
+(!activeZone||c.garage===activeZone) &&
+(c.name+c.tags+c.notes).toLowerCase().includes(s)
+);
+
+if(!f.length) grid.innerHTML=`<div class="empty">No vehicles</div>`;
+
+f.forEach((c,i)=>{
+let d=document.createElement("div");
+d.className="card";
+d.innerHTML=`<img src="${c.image||''}">
+<div style="padding:10px">
+<b>${c.name}</b><br><small>${c.garage}</small>
+</div>`;
+d.onclick=()=>openDetail(i);
+grid.appendChild(d);
+});
+
+renderMap();
+renderStats();
+localStorage.setItem("cars",JSON.stringify(cars));
+}
+
+/* MAP */
+function renderMap(){
+let zones=[...new Set(cars.map(c=>c.garage))];
+map.innerHTML="";
+zones.forEach(z=>{
+let d=document.createElement("div");
+d.className="zone"+(activeZone===z?" active":"");
+d.innerHTML=`${z}<br><span>${cars.filter(c=>c.garage===z).length} cars</span>`;
+d.onclick=()=>{activeZone=activeZone===z?null:z;render();}
+map.appendChild(d);
+});
+}
+
+/* STATS */
+function renderStats(){
+let s=document.getElementById("stats");
+let total=cars.length;
+let garages={};
+cars.forEach(c=>garages[c.garage]=(garages[c.garage]||0)+1);
+
+s.innerHTML=`<div style="padding:12px">Total Cars: ${total}</div>`;
+for(let g in garages){
+s.innerHTML+=`<div style="padding:12px">${g}: ${garages[g]}</div>`;
+}
 }
 
 /* FORM */
@@ -343,16 +344,14 @@ r.readAsDataURL(e.target.files[0]);
 };
 
 function save(){
-let car={
+cars.push({
 name:name.value,
 garage:garage.value,
 tags:tags.value,
 notes:notes.value,
 image:preview.src||""
-};
-if(editIndex!=null) cars[editIndex]=car;
-else cars.push(car);
-closeForm();render();vibrate();
+});
+closeForm();render();
 }
 
 /* DETAIL */
@@ -366,22 +365,12 @@ dGarage.innerText=c.garage;
 dTags.innerText=c.tags;
 dNotes.innerText=c.notes;
 }
-
 function closeDetail(){detailModal.style.display="none";}
 function del(){cars.splice(current,1);closeDetail();render();}
-function edit(){
-let c=cars[current];
-openForm();
-name.value=c.name;
-garage.value=c.garage;
-tags.value=c.tags;
-notes.value=c.notes;
-preview.src=c.image;preview.style.display="block";
-editIndex=current;
-closeDetail();
-}
+function edit(){closeDetail();openForm();}
 
 search.oninput=render;
+
 render();
 </script>
 
