@@ -1,378 +1,659 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Garage V4</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>V-CORE // VEHICLE MANAGEMENT</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --panel: rgba(15, 15, 15, 0.85);
+            --accent: #00f2ff;
+            --accent-glow: rgba(0, 242, 255, 0.4);
+            --gold: #ffcc00;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-<style>
-:root{
---bg:#050506;
---card:rgba(255,255,255,0.04);
---glass:rgba(255,255,255,0.06);
---neon:#00ffc6;
---accent:#d4af37;
---text:#ffffff;
-}
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
-*{box-sizing:border-box;font-family:system-ui;}
-body{
-margin:0;
-background:radial-gradient(circle at top,#0a0a0a,#050506);
-color:var(--text);
-overflow-x:hidden;
-}
+        body, html {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
 
-/* HEADER */
-header{
-padding:16px;
-font-size:18px;
-letter-spacing:1px;
-display:flex;
-justify-content:space-between;
-border-bottom:1px solid rgba(255,255,255,0.1);
-}
+        /* BACKGROUND EFFECTS */
+        .v-bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
 
-/* SCREENS */
-.wrapper{
-display:flex;
-width:300%;
-transition:.5s cubic-bezier(.77,0,.18,1);
-}
-.screen{
-width:100%;
-padding-bottom:90px;
-}
+        /* SCANLINE EFFECT */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.3;
+        }
 
-/* SEARCH */
-.search{padding:12px;}
-.search input{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:none;
-background:rgba(255,255,255,0.05);
-color:white;
-backdrop-filter:blur(10px);
-}
+        /* HUD LAYOUT */
+        .hud-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:14px;
-padding:12px;
-}
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
 
-.card{
-background:var(--card);
-border-radius:18px;
-overflow:hidden;
-backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,0.08);
-transition:.3s;
-position:relative;
-}
-.card:active{
-transform:scale(.96);
-box-shadow:0 0 15px var(--neon);
-}
+        .brand {
+            letter-spacing: 4px;
+            font-weight: 900;
+            font-style: italic;
+        }
 
-.card img{
-width:100%;
-height:120px;
-object-fit:cover;
-}
+        .brand span { color: var(--accent); }
 
-.card::after{
-content:'';
-position:absolute;
-inset:0;
-background:linear-gradient(120deg,transparent,rgba(0,255,200,.15),transparent);
-opacity:0;
-transition:.3s;
-}
-.card:hover::after{opacity:1}
+        /* NAVIGATION */
+        nav {
+            display: flex;
+            gap: 20px;
+        }
 
-/* MAP GRID */
-.map{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:12px;
-padding:12px;
-}
-.zone{
-padding:30px 10px;
-text-align:center;
-border-radius:16px;
-background:var(--glass);
-cursor:pointer;
-position:relative;
-}
-.zone.active{
-outline:2px solid var(--neon);
-}
-.zone span{
-font-size:12px;
-color:#aaa;
-}
+        .nav-item {
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-dim);
+            transition: var(--transition);
+            position: relative;
+        }
 
-/* FAB */
-.fab{
-position:fixed;
-bottom:90px;
-right:20px;
-width:65px;height:65px;
-border-radius:50%;
-border:none;
-font-size:32px;
-color:black;
-background:linear-gradient(135deg,var(--accent),var(--neon));
-box-shadow:0 0 20px var(--neon);
-}
+        .nav-item.active {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+        }
 
-/* NAV */
-nav{
-position:fixed;
-bottom:0;
-width:100%;
-display:flex;
-background:#0b0b0c;
-border-top:1px solid rgba(255,255,255,0.1);
-}
-nav div{
-flex:1;
-text-align:center;
-padding:14px;
-cursor:pointer;
-}
-nav .active{color:var(--neon)}
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
 
-/* MODAL */
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.85);
-display:none;
-justify-content:center;
-align-items:flex-end;
-}
-.modal-content{
-background:#0b0b0c;
-width:100%;
-max-height:90%;
-padding:16px;
-border-radius:20px 20px 0 0;
-animation:slide .3s;
-}
-@keyframes slide{
-from{transform:translateY(100%)}
-to{transform:translateY(0)}
-}
+        /* SCREENS */
+        .screen {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+            animation: screenFade 0.5s ease;
+        }
 
-input,textarea{
-width:100%;
-padding:12px;
-margin-bottom:10px;
-border-radius:12px;
-border:none;
-background:rgba(255,255,255,0.05);
-color:white;
-}
+        .screen.active { display: block; }
 
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:12px;
-margin-top:5px;
-background:var(--accent);
-}
+        @keyframes screenFade {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* DETAIL */
-.detail img{
-width:100%;
-border-radius:14px;
-margin-bottom:10px;
-}
+        /* GARAGE GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding-bottom: 100px;
+        }
 
-/* EMPTY */
-.empty{
-text-align:center;
-padding:50px;
-color:#777;
-}
-</style>
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            height: 180px;
+        }
+
+        .card:hover, .card:active {
+            border-color: var(--accent);
+            transform: scale(1.02);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            transition: 0.5s;
+        }
+
+        .card:hover .card-img { opacity: 0.9; }
+
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+        }
+
+        .card-name {
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-garage {
+            font-size: 10px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        /* LIGHT SWEEP EFFECT */
+        .sweep {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-20deg);
+            animation: sweep 4s infinite;
+        }
+
+        @keyframes sweep {
+            0% { left: -100%; }
+            20% { left: 150%; }
+            100% { left: 150%; }
+        }
+
+        /* MAP VIEW */
+        .map-container {
+            height: 400px;
+            border: 1px solid var(--border);
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 30px 30px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-node {
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--accent);
+            background: rgba(0, 242, 255, 0.1);
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .map-node:hover { background: var(--accent); color: black; }
+        .map-node span { font-size: 9px; font-weight: bold; }
+        .map-node.active { box-shadow: 0 0 15px var(--accent); border-width: 2px; }
+
+        /* STATS PANEL */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: var(--glass);
+            padding: 20px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .stat-val { font-size: 32px; font-weight: 900; color: var(--accent); }
+        .stat-label { font-size: 10px; text-transform: uppercase; color: var(--text-dim); }
+
+        .progress-container { margin-top: 15px; }
+        .progress-bar {
+            height: 4px;
+            background: #222;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            transition: 1s ease-out;
+            width: 0;
+        }
+
+        /* MODALS / OVERLAYS */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .sheet {
+            background: var(--bg);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--accent);
+            position: relative;
+            transform: translateY(100px);
+            transition: var(--transition);
+        }
+
+        .overlay.active { display: flex; }
+        .overlay.active .sheet { transform: translateY(0); }
+
+        .sheet-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sheet-body { padding: 20px; }
+
+        /* FORMS */
+        input, select, textarea {
+            width: 100%;
+            background: #111;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .btn {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            letter-spacing: 1px;
+        }
+
+        .btn:active { transform: scale(0.98); opacity: 0.8; }
+        .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-size: 30px;
+            font-weight: bold;
+            box-shadow: 0 0 20px var(--accent-glow);
+            cursor: pointer;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .fab:hover { transform: rotate(90deg) scale(1.1); }
+
+        /* SEARCH BAR */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            background: var(--glass);
+            border: none;
+            border-bottom: 1px solid var(--border);
+            font-size: 18px;
+            padding: 10px 0;
+        }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-dim);
+            border: 1px dashed var(--border);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="v-bg-glow"></div>
+    
+    <div class="hud-container">
+        <header>
+            <div class="brand">V-CORE // <span>OS</span></div>
+            <nav id="mainNav">
+                <div class="nav-item active" onclick="showScreen('garage')">Garage</div>
+                <div class="nav-item" onclick="showScreen('map')">Network</div>
+                <div class="nav-item" onclick="showScreen('stats')">Data</div>
+            </nav>
+        </header>
 
-<header>🚗 GARAGE V4</header>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="SEARCH VEHICLE DATABASE..." oninput="renderVehicles()">
+        </div>
 
-<div class="wrapper" id="wrapper">
+        <div id="screen-garage" class="screen active">
+            <div id="vehicleGrid" class="grid">
+                </div>
+        </div>
 
-<!-- GARAGE -->
-<div class="screen">
-<div class="search">
-<input id="search" placeholder="Search vehicles...">
-</div>
-<div id="grid" class="grid"></div>
-</div>
+        <div id="screen-map" class="screen">
+            <div class="map-container" id="mapContainer">
+                <div class="map-node active" style="top:20%; left:20%" onclick="filterByGarage('North Los Santos', this)">
+                    <span>01</span><span style="font-size:7px">NORTH</span>
+                </div>
+                <div class="map-node" style="top:40%; left:70%" onclick="filterByGarage('Downtown', this)">
+                    <span>02</span><span style="font-size:7px">D-TOWN</span>
+                </div>
+                <div class="map-node" style="top:70%; left:30%" onclick="filterByGarage('Vespucci', this)">
+                    <span>03</span><span style="font-size:7px">VESP</span>
+                </div>
+                <div class="map-node" style="top:10%; left:55%" onclick="filterByGarage('Vinewood', this)">
+                    <span>04</span><span style="font-size:7px">WOOD</span>
+                </div>
+            </div>
+            <p style="text-align:center; font-size:10px; color:var(--text-dim); margin-top:20px; letter-spacing:2px">SELECT ZONE TO FILTER LOCAL UPLINK</p>
+        </div>
 
-<!-- MAP -->
-<div class="screen">
-<div class="map" id="map"></div>
-</div>
+        <div id="screen-stats" class="screen">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Total Fleet</div>
+                    <div id="stat-total" class="stat-val">00</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">System Integrity</div>
+                    <div class="stat-val">98%</div>
+                </div>
+            </div>
+            <div class="stat-box" style="margin-top:20px">
+                <div class="stat-label">Garage Distribution</div>
+                <div id="distributionBars"></div>
+            </div>
+            <div style="margin-top: 30px; display: flex; gap: 10px;">
+                <button class="btn btn-outline" onclick="exportData()">EXPORT JSON</button>
+                <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">IMPORT</button>
+                <input type="file" id="importFile" hidden onchange="importData(this)">
+            </div>
+        </div>
+    </div>
 
-<!-- STATS -->
-<div class="screen">
-<div id="stats"></div>
-</div>
+    <div class="overlay" id="modalOverlay">
+        <div class="sheet">
+            <div class="sheet-header">
+                <div style="font-weight:bold; letter-spacing:1px" id="modalTitle">REGISTER VEHICLE</div>
+                <div style="cursor:pointer; color:var(--accent)" onclick="closeModal()">✕</div>
+            </div>
+            <div class="sheet-body">
+                <input type="text" id="vName" placeholder="VEHICLE NAME">
+                <select id="vGarage">
+                    <option value="North Los Santos">NORTH LOS SANTOS</option>
+                    <option value="Downtown">DOWNTOWN</option>
+                    <option value="Vespucci">VESPUCCI</option>
+                    <option value="Vinewood">VINEWOOD</option>
+                </select>
+                <input type="text" id="vTags" placeholder="TAGS (Comma separated)">
+                <input type="file" id="vImg" accept="image/*" style="font-size:10px; border:none; padding:0">
+                <button class="btn" onclick="saveVehicle()">CONFIRM UPLINK</button>
+                <button id="deleteBtn" class="btn btn-outline" style="margin-top:10px; border-color:#ff4444; color:#ff4444; display:none" onclick="deleteVehicle()">SCRAP VEHICLE</button>
+            </div>
+        </div>
+    </div>
 
-</div>
+    <div class="fab" onclick="openModal()">+</div>
 
-<nav>
-<div class="active" onclick="go(0,this)">Garage</div>
-<div onclick="go(1,this)">Map</div>
-<div onclick="go(2,this)">Stats</div>
-</nav>
+    <script>
+        let vehicles = JSON.parse(localStorage.getItem('vcore_data')) || [];
+        let editingIndex = null;
+        let currentFilter = '';
 
-<button class="fab" onclick="openForm()">+</button>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.target.classList.add('active');
 
-<!-- FORM -->
-<div class="modal" id="formModal">
-<div class="modal-content">
-<input id="name" placeholder="Name">
-<input id="garage" placeholder="Garage Zone (e.g. A1)">
-<input id="tags" placeholder="Tags">
-<textarea id="notes"></textarea>
-<input type="file" id="img">
-<img id="preview" style="width:100%;display:none;border-radius:10px">
-<button onclick="save()">Save</button>
-<button onclick="closeForm()">Cancel</button>
-</div>
-</div>
+            if(screenId === 'stats') updateStats();
+        }
 
-<!-- DETAIL -->
-<div class="modal" id="detailModal">
-<div class="modal-content detail">
-<img id="dImg">
-<h2 id="dName"></h2>
-<p id="dGarage"></p>
-<p id="dTags"></p>
-<p id="dNotes"></p>
-<button onclick="edit()">Edit</button>
-<button onclick="del()">Delete</button>
-<button onclick="closeDetail()">Close</button>
-</div>
-</div>
+        function openModal(index = null) {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.add('active');
+            
+            if(index !== null) {
+                editingIndex = index;
+                const v = vehicles[index];
+                document.getElementById('vName').value = v.name;
+                document.getElementById('vGarage').value = v.garage;
+                document.getElementById('vTags').value = v.tags.join(', ');
+                document.getElementById('modalTitle').innerText = "MODIFY DATA";
+                document.getElementById('deleteBtn').style.display = 'block';
+            } else {
+                editingIndex = null;
+                document.getElementById('vName').value = '';
+                document.getElementById('vTags').value = '';
+                document.getElementById('modalTitle').innerText = "REGISTER VEHICLE";
+                document.getElementById('deleteBtn').style.display = 'none';
+            }
+        }
 
-<script>
-let cars=JSON.parse(localStorage.getItem("cars")||"[]");
-let current=null,activeZone=null;
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
 
-/* NAV */
-function go(i,el){
-wrapper.style.transform=`translateX(-${i*100}%)`;
-document.querySelectorAll("nav div").forEach(d=>d.classList.remove("active"));
-el.classList.add("active");
-}
+        async function saveVehicle() {
+            const name = document.getElementById('vName').value;
+            const garage = document.getElementById('vGarage').value;
+            const tags = document.getElementById('vTags').value.split(',').map(t => t.trim());
+            const imgFile = document.getElementById('vImg').files[0];
+            
+            let imgBase64 = editingIndex !== null ? vehicles[editingIndex].image : '';
+            
+            if(imgFile) {
+                imgBase64 = await toBase64(imgFile);
+            }
 
-/* RENDER */
-function render(){
-let grid=document.getElementById("grid");
-let s=search.value.toLowerCase();
-grid.innerHTML="";
+            const vehicleData = { name, garage, tags, image: imgBase64 };
 
-let f=cars.filter(c=>
-(!activeZone||c.garage===activeZone) &&
-(c.name+c.tags+c.notes).toLowerCase().includes(s)
-);
+            if(editingIndex !== null) {
+                vehicles[editingIndex] = vehicleData;
+            } else {
+                vehicles.push(vehicleData);
+            }
 
-if(!f.length) grid.innerHTML=`<div class="empty">No vehicles</div>`;
+            saveAndRender();
+            closeModal();
+        }
 
-f.forEach((c,i)=>{
-let d=document.createElement("div");
-d.className="card";
-d.innerHTML=`<img src="${c.image||''}">
-<div style="padding:10px">
-<b>${c.name}</b><br><small>${c.garage}</small>
-</div>`;
-d.onclick=()=>openDetail(i);
-grid.appendChild(d);
-});
+        function deleteVehicle() {
+            if(confirm('SCRAP THIS ENTRY PERMANENTLY?')) {
+                vehicles.splice(editingIndex, 1);
+                saveAndRender();
+                closeModal();
+            }
+        }
 
-renderMap();
-renderStats();
-localStorage.setItem("cars",JSON.stringify(cars));
-}
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
 
-/* MAP */
-function renderMap(){
-let zones=[...new Set(cars.map(c=>c.garage))];
-map.innerHTML="";
-zones.forEach(z=>{
-let d=document.createElement("div");
-d.className="zone"+(activeZone===z?" active":"");
-d.innerHTML=`${z}<br><span>${cars.filter(c=>c.garage===z).length} cars</span>`;
-d.onclick=()=>{activeZone=activeZone===z?null:z;render();}
-map.appendChild(d);
-});
-}
+        function saveAndRender() {
+            localStorage.setItem('vcore_data', JSON.stringify(vehicles));
+            renderVehicles();
+        }
 
-/* STATS */
-function renderStats(){
-let s=document.getElementById("stats");
-let total=cars.length;
-let garages={};
-cars.forEach(c=>garages[c.garage]=(garages[c.garage]||0)+1);
+        function filterByGarage(garage, el) {
+            document.querySelectorAll('.map-node').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            currentFilter = garage;
+            showScreen('garage');
+            // Update nav visual since we force moved
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector('[onclick="showScreen(\'garage\')"]').classList.add('active');
+            renderVehicles();
+        }
 
-s.innerHTML=`<div style="padding:12px">Total Cars: ${total}</div>`;
-for(let g in garages){
-s.innerHTML+=`<div style="padding:12px">${g}: ${garages[g]}</div>`;
-}
-}
+        function renderVehicles() {
+            const grid = document.getElementById('vehicleGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            grid.innerHTML = '';
 
-/* FORM */
-function openForm(){formModal.style.display="flex";}
-function closeForm(){formModal.style.display="none";}
+            const filtered = vehicles.filter(v => {
+                const matchesSearch = v.name.toLowerCase().includes(search) || v.tags.some(t => t.toLowerCase().includes(search));
+                const matchesGarage = currentFilter === '' || v.garage === currentFilter;
+                return matchesSearch && matchesGarage;
+            });
 
-img.onchange=e=>{
-let r=new FileReader();
-r.onload=()=>{preview.src=r.result;preview.style.display="block";}
-r.readAsDataURL(e.target.files[0]);
-};
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1">NO DATA DETECTED IN THIS SECTOR</div>`;
+                return;
+            }
 
-function save(){
-cars.push({
-name:name.value,
-garage:garage.value,
-tags:tags.value,
-notes:notes.value,
-image:preview.src||""
-});
-closeForm();render();
-}
+            filtered.forEach((v, i) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openModal(vehicles.indexOf(v));
+                card.innerHTML = `
+                    <div class="sweep"></div>
+                    <img src="${v.image || 'https://via.placeholder.com/400x200/111/222?text=NO+UPLINK'}" class="card-img">
+                    <div class="card-info">
+                        <div class="card-garage">${v.garage}</div>
+                        <div class="card-name">${v.name}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-/* DETAIL */
-function openDetail(i){
-current=i;
-let c=cars[i];
-detailModal.style.display="flex";
-dImg.src=c.image;
-dName.innerText=c.name;
-dGarage.innerText=c.garage;
-dTags.innerText=c.tags;
-dNotes.innerText=c.notes;
-}
-function closeDetail(){detailModal.style.display="none";}
-function del(){cars.splice(current,1);closeDetail();render();}
-function edit(){closeDetail();openForm();}
+        function updateStats() {
+            document.getElementById('stat-total').innerText = vehicles.length.toString().padStart(2, '0');
+            const dist = {};
+            vehicles.forEach(v => dist[v.garage] = (dist[v.garage] || 0) + 1);
+            
+            const barsContainer = document.getElementById('distributionBars');
+            barsContainer.innerHTML = '';
+            
+            Object.keys(dist).forEach(g => {
+                const percent = (dist[g] / vehicles.length) * 100;
+                barsContainer.innerHTML += `
+                    <div class="progress-container">
+                        <div style="display:flex; justify-content:space-between; font-size:9px">
+                            <span>${g.toUpperCase()}</span>
+                            <span>${dist[g]}</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div>
+                    </div>
+                `;
+            });
+        }
 
-search.oninput=render;
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vehicles));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "vcore_backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
 
-render();
-</script>
+        function importData(input) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if(Array.isArray(imported)) {
+                        vehicles = imported;
+                        saveAndRender();
+                        alert('UPLINK SUCCESSFUL');
+                    }
+                } catch(e) {
+                    alert('UPLINK FAILED: CORRUPT DATA');
+                }
+            };
+            reader.readAsText(file);
+        }
 
+        // Init
+        renderVehicles();
+    </script>
 </body>
 </html>
