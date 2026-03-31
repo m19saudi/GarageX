@@ -3,100 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>V-CORE // ULTIMATE GARAGE</title>
+    <title>V-CORE // VEHICLE MANAGEMENT SYSTEM</title>
     <style>
         :root {
             --bg: #050505;
-            --panel: rgba(10, 10, 10, 0.9);
+            --panel: rgba(10, 10, 10, 0.98);
             --accent: #00f2ff;
-            --accent-glow: rgba(0, 242, 255, 0.4);
-            --gold: #ffcc00;
+            --accent-glow: rgba(0, 242, 255, 0.3);
             --danger: #ff3e3e;
             --text-main: #ffffff;
-            --text-dim: #666;
+            --text-dim: #777;
             --border: rgba(255, 255, 255, 0.1);
-            --transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', Impact, sans-serif; }
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text-main); overflow: hidden; height: 100%; width: 100%; }
 
-        /* CINEMATIC EFFECTS */
-        .v-bg-glow { position: fixed; top: 50%; left: 50%; width: 100vw; height: 100vw; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); transform: translate(-50%, -50%); opacity: 0.1; z-index: -1; pointer-events: none; }
-        
         body::after {
             content: ""; position: fixed; inset: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-            background-size: 100% 3px, 3px 100%; pointer-events: none; z-index: 1000; opacity: 0.3;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 3px; pointer-events: none; z-index: 1000; opacity: 0.15;
         }
 
-        .hud-container { display: flex; flex-direction: column; height: 100vh; padding: 30px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+        .hud-container { display: flex; flex-direction: column; height: 100vh; padding: 25px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
 
-        /* HEADER & NAV */
-        header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .brand { letter-spacing: 5px; font-weight: 900; font-style: italic; font-size: 1.4rem; text-shadow: 0 0 10px var(--accent-glow); }
+        header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .brand { letter-spacing: 5px; font-weight: 900; font-style: italic; font-size: 1.4rem; color: var(--text-main); }
         .brand span { color: var(--accent); }
 
-        nav { display: flex; gap: 25px; }
-        .nav-item { cursor: pointer; text-transform: uppercase; font-size: 12px; font-weight: bold; color: var(--text-dim); transition: var(--transition); letter-spacing: 1px; }
-        .nav-item.active { color: var(--accent); text-shadow: 0 0 15px var(--accent); }
+        nav { display: flex; gap: 20px; }
+        .nav-item { cursor: pointer; text-transform: uppercase; font-size: 11px; font-weight: bold; color: var(--text-dim); letter-spacing: 1px; position: relative; transition: 0.3s; }
+        .nav-item.active { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
         .nav-item.active::after { content: ''; position: absolute; bottom: -16px; left: 0; width: 100%; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-        /* SCREEN LOGIC */
-        .screen { display: none; flex: 1; overflow-y: auto; padding-right: 10px; animation: slideUp 0.6s ease; }
+        .screen { display: none; flex: 1; overflow-y: auto; padding-right: 10px; animation: fadeIn 0.3s ease; }
         .screen.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); filter: blur(10px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* GARAGE GRID */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 100px; }
-        .card { background: var(--panel); border: 1px solid var(--border); position: relative; overflow: hidden; height: 180px; cursor: pointer; transition: 0.4s; }
-        .card:hover { border-color: var(--accent); transform: scale(1.02); box-shadow: 0 0 20px var(--accent-glow); }
-        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.5s; }
-        .card:hover .card-img { opacity: 0.8; }
-        .card-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); border-top: 1px solid rgba(0, 242, 255, 0.2); }
-        .card-name { font-weight: 900; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 1px; }
-        .card-meta { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
+        /* GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding-bottom: 100px; }
+        .card { background: var(--panel); border: 1px solid var(--border); height: 180px; position: relative; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); transform: scale(1.02); }
+        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
+        .card-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: rgba(0,0,0,0.85); border-top: 1px solid rgba(0,242,255,0.1); }
+        .card-name { font-weight: 900; text-transform: uppercase; font-size: 1rem; }
+        .card-meta { font-size: 9px; color: var(--accent); text-transform: uppercase; }
 
-        /* MAP/NETWORK SCREEN */
-        .map-container { height: 450px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); position: relative; background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; overflow: hidden; }
-        .map-node { position: absolute; width: 50px; height: 50px; border: 1px solid var(--accent); background: rgba(0, 242, 255, 0.1); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
-        .map-node:hover, .map-node.active { background: var(--accent); color: black; box-shadow: 0 0 20px var(--accent); }
+        /* MAP */
+        .map-wrapper { height: 400px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); position: relative; background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 25px 25px; }
+        .map-node { position: absolute; width: 50px; height: 50px; border: 1px solid var(--accent); background: rgba(0, 242, 255, 0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; transition: 0.3s; }
+        .map-node.active, .map-node:hover { background: var(--accent); color: black; box-shadow: 0 0 20px var(--accent); }
+
+        /* DATA & BULK */
+        .data-section { background: rgba(255,255,255,0.03); padding: 25px; border-left: 4px solid var(--accent); margin-bottom: 30px; }
+        .bulk-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .bulk-table th { text-align: left; padding: 10px; font-size: 10px; color: var(--accent); border-bottom: 1px solid #222; }
+        .bulk-table td { padding: 8px; border-bottom: 1px solid #111; }
+        .table-input { background: #111; border: 1px solid #333; color: white; padding: 10px; width: 100%; font-size: 13px; outline: none; transition: 0.2s; }
+        .table-input:focus { border-color: var(--accent); background: #181818; }
+
+        /* DRAG & DROP UPLOAD */
+        .upload-area { position: relative; border: 2px dashed #333; padding: 40px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 20px; }
+        .upload-area.dragover { border-color: var(--accent); background: rgba(0, 242, 255, 0.1); box-shadow: inset 0 0 20px var(--accent-glow); }
+        .upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .upload-text { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); pointer-events: none; }
 
         /* MODALS */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(15px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .overlay.active { display: flex; }
-        .sheet { background: #080808; width: 90%; max-width: 450px; border: 1px solid var(--accent); position: relative; padding: 40px; box-shadow: 0 0 50px rgba(0,0,0,1); animation: modalIn 0.4s ease; }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .modal-sheet { background: #080808; width: 100%; max-width: 550px; border: 1px solid var(--accent); padding: 30px; box-shadow: 0 0 50px #000; position: relative; }
+        .preview-img { width: 100%; height: 250px; object-fit: cover; border: 1px solid var(--border); margin-bottom: 20px; }
 
-        input, select { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 15px; margin-bottom: 20px; outline: none; font-size: 14px; letter-spacing: 1px; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
-
-        .btn { background: var(--accent); color: black; border: none; padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; width: 100%; transition: 0.3s; letter-spacing: 2px; font-size: 12px; }
-        .btn:hover { letter-spacing: 4px; box-shadow: 0 0 20px var(--accent); }
-        .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); margin-top: 15px; }
+        input, select { width: 100%; background: #111; border: 1px solid #333; color: white; padding: 14px; margin-bottom: 15px; outline: none; }
+        .btn { background: var(--accent); color: black; border: none; padding: 15px; font-weight: bold; text-transform: uppercase; cursor: pointer; width: 100%; letter-spacing: 1px; transition: 0.2s; }
+        .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-bottom: 10px; }
+        .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); margin-top: 10px; }
         .btn-danger:hover { background: var(--danger); color: white; }
 
-        /* STATS */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .stat-box { background: rgba(255,255,255,0.03); padding: 25px; border-left: 5px solid var(--accent); }
-        .stat-val { font-size: 2.5rem; font-weight: 900; color: var(--accent); line-height: 1; }
-        .stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; margin-top: 10px; letter-spacing: 2px; }
-
-        .fab { position: fixed; bottom: 40px; right: 40px; width: 70px; height: 70px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 35px; cursor: pointer; box-shadow: 0 0 30px var(--accent-glow); z-index: 100; transition: 0.3s; }
+        .fab { position: fixed; bottom: 35px; right: 35px; width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 32px; cursor: pointer; z-index: 100; box-shadow: 0 0 20px var(--accent-glow); transition: 0.3s; }
         .fab:hover { transform: scale(1.1) rotate(90deg); }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent); }
     </style>
 </head>
-<body>
-    <div class="v-bg-glow"></div>
-    
+<body onclick="checkClickOutside(event)">
+
     <div class="hud-container">
         <header>
-            <div class="brand">V-CORE // <span>GLOBAL</span></div>
-            <nav id="mainNav">
+            <div class="brand">V-CORE // <span>OS</span></div>
+            <nav>
                 <div class="nav-item active" onclick="switchTab('garage', this)">GARAGE</div>
                 <div class="nav-item" onclick="switchTab('network', this)">NETWORK</div>
                 <div class="nav-item" onclick="switchTab('data', this)">DATA</div>
@@ -104,188 +97,209 @@
         </header>
 
         <div id="screen-garage" class="screen active">
-            <input type="text" id="search" placeholder="SEARCH DATABASE..." oninput="render()" style="background: transparent; border: none; border-bottom: 1px solid var(--border); padding-left: 0; font-size: 18px; margin-bottom: 30px;">
+            <input type="text" id="searchInput" placeholder="SEARCH ASSET DATABASE..." oninput="render()" style="background: transparent; border: none; border-bottom: 1px solid var(--border); font-size: 18px; padding: 10px 0; margin-bottom: 25px;">
             <div id="grid" class="grid"></div>
         </div>
 
         <div id="screen-network" class="screen">
-            <div class="map-container">
-                <div class="map-node" style="top:20%; left:20%" onclick="filterZone('North Zone', this)">N-01</div>
-                <div class="map-node" style="top:40%; left:70%" onclick="filterZone('Downtown', this)">D-02</div>
-                <div class="map-node" style="top:75%; left:30%" onclick="filterZone('Harbor', this)">H-03</div>
-                <div class="map-node" style="top:10%; left:55%" onclick="filterZone('Vinewood', this)">V-04</div>
+            <div class="map-wrapper">
+                <div class="map-node" style="top:15%; left:25%" onclick="filterMap('North Sector', this)">S-01</div>
+                <div class="map-node" style="top:45%; left:70%" onclick="filterMap('Downtown Hub', this)">S-02</div>
+                <div class="map-node" style="top:75%; left:35%" onclick="filterMap('Industrial', this)">S-03</div>
+                <div class="map-node" style="top:25%; left:55%" onclick="filterMap('Vinewood', this)">S-04</div>
             </div>
-            <p style="text-align:center; font-size:10px; color:var(--text-dim); margin-top:20px; letter-spacing:3px;">SELECT SECTOR TO FILTER UPLINK</p>
+            <p style="text-align:center; font-size:9px; color:var(--text-dim); margin-top:20px; letter-spacing:4px;">SELECT SECTOR SIGNAL TO ISOLATE ASSETS</p>
         </div>
 
         <div id="screen-data" class="screen">
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div id="stat-count" class="stat-val">00</div>
-                    <div class="stat-label">Verified Assets</div>
+            <div class="data-section">
+                <div style="font-size: 2.5rem; font-weight: 900; color: var(--accent);" id="stat-total">00</div>
+                <div style="font-size: 10px; color: var(--text-dim); letter-spacing: 2px;">TOTAL ASSETS DETECTED</div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button class="btn btn-outline" onclick="exportBackup()">EXPORT BACKUP</button>
+                    <button class="btn btn-outline" onclick="document.getElementById('importFile').click()">IMPORT DATABASE</button>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-val">98%</div>
-                    <div class="stat-label">System Health</div>
+                <input type="file" id="importFile" hidden onchange="importDB(event)">
+            </div>
+
+            <div class="data-section" style="border-left-color: #fff;">
+                <h3 style="font-size: 12px; letter-spacing: 2px; margin-top: 0;">BULK DATA ENTRY</h3>
+                <table class="bulk-table">
+                    <thead>
+                        <tr><th>VEHICLE NAME</th><th>GARAGE ASSIGNMENT</th><th>ACTION</th></tr>
+                    </thead>
+                    <tbody id="bulkBody"></tbody>
+                </table>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button class="btn btn-outline" onclick="promptBulkRows()">+ NEW ROWS</button>
+                    <button class="btn" onclick="processBulk()">INITIALIZE AND SYNC</button>
                 </div>
             </div>
-            
-            <div style="margin-top: 50px; border-top: 1px solid var(--border); padding-top: 30px;">
-                <div style="font-size: 11px; color: var(--danger); font-weight: bold; margin-bottom: 15px;">CRITICAL SYSTEM PROTOCOL</div>
-                <button class="btn btn-danger" onclick="nuke()">RESET LOCAL DATABASE</button>
-            </div>
+            <button class="btn btn-danger" onclick="nukeDB()">PERMANENT SYSTEM WIPE</button>
         </div>
     </div>
 
-    <div class="overlay" id="modal">
-        <div class="sheet">
-            <h2 id="modalTitle" style="margin-top:0; font-style: italic; letter-spacing: 2px;">SECURE UPLINK</h2>
-            <input type="text" id="vName" placeholder="VEHICLE MODEL">
+    <div class="overlay" id="previewOverlay">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <h2 id="pTitle" style="margin-top:0; font-style: italic; letter-spacing: 2px;">VEHICLE PREVIEW</h2>
+            <img id="pImg" class="preview-img" src="">
+            <div id="pMeta" style="font-size: 11px; color: var(--accent); margin-bottom: 20px; letter-spacing: 2px;">GARAGE: DOWNTOWN</div>
+            <button class="btn" onclick="openEdit()">EDIT</button>
+            <button class="btn btn-danger" onclick="deleteFromPreview()">DELETE</button>
+            <button class="btn" style="background:none; color:white; margin-top:10px;" onclick="closeModal('previewOverlay')">CANCEL</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="editOverlay">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <h2 id="modalTitle" style="margin-top:0; font-style: italic; letter-spacing: 2px;">NEW CAR ASSET</h2>
+            <input type="text" id="vName" placeholder="VEHICLE MODEL NAME">
             <select id="vGarage">
-                <option value="North Zone">NORTH ZONE GARAGE</option>
-                <option value="Downtown">DOWNTOWN HUB</option>
-                <option value="Harbor">HARBOR DOCKS</option>
+                <option value="North Sector">NORTH SECTOR GARAGE</option>
+                <option value="Downtown Hub">DOWNTOWN HUB</option>
+                <option value="Industrial">INDUSTRIAL DOCKS</option>
                 <option value="Vinewood">VINEWOOD ESTATE</option>
             </select>
-            <input type="text" id="vTags" placeholder="TAGS (e.g. SUPER, DRIFT)">
-            <input type="file" id="vImg" accept="image/*" style="border:none; padding:0; font-size:10px;">
+            <input type="text" id="vTags" placeholder="TAGS (e.g. SUPER, SPORTS)">
             
-            <button class="btn" onclick="save()">CONFIRM UPLINK</button>
-            <button id="delBtn" class="btn btn-danger" onclick="remove()" style="display:none">SCRAP ASSET</button>
-            <button class="btn" style="background:none; color:white; margin-top:10px;" onclick="closeModal()">CANCEL</button>
+            <div class="upload-area" id="dropZone">
+                <span id="uploadLabel" class="upload-text">DRAG & DROP IMAGE OR CLICK TO UPLOAD</span>
+                <input type="file" id="vImg" accept="image/*" onchange="updateUploadLabel(this)">
+            </div>
+
+            <button class="btn" onclick="saveVehicle()">CONFIRM</button>
+            <button class="btn" style="background:none; color:white; margin-top:10px;" onclick="closeModal('editOverlay')">CANCEL</button>
         </div>
     </div>
 
-    <div class="fab" onclick="openModal()">+</div>
+    <div class="fab" onclick="openAdd()">+</div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('VCORE_RESTORED_DB')) || [];
-        let currentEditIdx = null;
-        let currentZone = '';
+        let db = JSON.parse(localStorage.getItem('VCORE_FINAL_V4')) || [];
+        let activeIdx = null;
+        let mapFilter = '';
+
+        function checkClickOutside(e) {
+            if(e.target.classList.contains('overlay')) { closeModal('previewOverlay'); closeModal('editOverlay'); }
+        }
+
+        /* DRAG & DROP LOGIC */
+        const dropZone = document.getElementById('dropZone');
+        ['dragover', 'dragenter'].forEach(e => {
+            dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.add('dragover'); });
+        });
+        ['dragleave', 'dragend', 'drop'].forEach(e => {
+            dropZone.addEventListener(e, (ev) => { ev.preventDefault(); dropZone.classList.remove('dragover'); });
+        });
+        dropZone.addEventListener('drop', (ev) => {
+            const file = ev.dataTransfer.files[0];
+            if(file && file.type.startsWith('image/')) {
+                document.getElementById('vImg').files = ev.dataTransfer.files;
+                updateUploadLabel(document.getElementById('vImg'));
+            }
+        });
+
+        function updateUploadLabel(input) {
+            if(input.files[0]) document.getElementById('uploadLabel').innerText = `READY: ${input.files[0].name.toUpperCase()}`;
+        }
 
         function switchTab(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('screen-' + id).classList.add('active');
             el.classList.add('active');
-            if(id === 'data') updateStats();
+            if(id === 'data') { updateStats(); if(document.getElementById('bulkBody').children.length === 0) addRows(1); }
         }
 
-        function filterZone(zone, el) {
+        function filterMap(zone, el) {
             document.querySelectorAll('.map-node').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
-            currentZone = zone;
-            render();
-            // Automatically jump to garage to show results
-            switchTab('garage', document.querySelector('.nav-item'));
+            mapFilter = zone; render(); switchTab('garage', document.querySelectorAll('.nav-item')[0]);
         }
 
-        function openModal(idx = null) {
-            currentEditIdx = idx;
-            const modal = document.getElementById('modal');
-            const delBtn = document.getElementById('delBtn');
+        function promptBulkRows() {
+            const count = prompt("How many rows to add?", "5");
+            if (count && !isNaN(count)) addRows(parseInt(count));
+        }
 
-            // BLANKING LOGIC: Always start clean
-            document.getElementById('vName').value = '';
-            document.getElementById('vTags').value = '';
-            document.getElementById('vImg').value = '';
-            document.getElementById('modalTitle').innerText = "SECURE UPLINK";
-            delBtn.style.display = 'none';
-
-            if(idx !== null) {
-                const v = db[idx];
-                document.getElementById('vName').value = v.name;
-                document.getElementById('vTags').value = v.tags.join(', ');
-                document.getElementById('vGarage').value = v.garage;
-                document.getElementById('modalTitle').innerText = "MODIFY ASSET";
-                delBtn.style.display = 'block';
+        function addRows(count) {
+            const tbody = document.getElementById('bulkBody');
+            for(let i = 0; i < count; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td><input type="text" class="table-input bulk-name" placeholder="Model..." tabindex="1"></td><td><select class="table-input bulk-garage" tabindex="-1"><option value="North Sector">NORTH SECTOR</option><option value="Downtown Hub">DOWNTOWN HUB</option><option value="Industrial">INDUSTRIAL</option><option value="Vinewood">VINEWOOD</option></select></td><td><button class="btn-danger" style="padding:5px 10px;" onclick="this.closest('tr').remove()" tabindex="-1">X</button></td>`;
+                tbody.appendChild(row);
             }
-            
-            modal.classList.add('active');
         }
 
-        function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        function processBulk() {
+            const names = document.querySelectorAll('.bulk-name');
+            const garages = document.querySelectorAll('.bulk-garage');
+            names.forEach((n, i) => { if(n.value.trim()) db.push({ name: n.value.trim(), garage: garages[i].value, tags: [], img: '' }); });
+            sync(); document.getElementById('bulkBody').innerHTML = ''; switchTab('garage', document.querySelectorAll('.nav-item')[0]);
+        }
 
-        async function save() {
-            const name = document.getElementById('vName').value.trim();
-            const garage = document.getElementById('vGarage').value;
-            const tags = document.getElementById('vTags').value.split(',').map(t => t.trim());
+        function openPreview(idx) {
+            activeIdx = idx; const v = db[idx];
+            document.getElementById('pTitle').innerText = v.name.toUpperCase();
+            document.getElementById('pImg').src = v.img || 'https://via.placeholder.com/500x250/111/00f2ff?text=NO+IMAGE';
+            document.getElementById('pMeta').innerText = `SECTOR: ${v.garage.toUpperCase()}`;
+            document.getElementById('previewOverlay').classList.add('active');
+        }
+
+        function openAdd() {
+            activeIdx = null; document.getElementById('modalTitle').innerText = "NEW CAR ASSET";
+            document.getElementById('vName').value = ''; document.getElementById('vTags').value = ''; document.getElementById('vImg').value = '';
+            document.getElementById('uploadLabel').innerText = "DRAG & DROP IMAGE OR CLICK TO UPLOAD";
+            document.getElementById('editOverlay').classList.add('active');
+        }
+
+        function openEdit() {
+            const v = db[activeIdx]; document.getElementById('modalTitle').innerText = "MODIFY ASSET DATA";
+            document.getElementById('vName').value = v.name; document.getElementById('vTags').value = v.tags.join(', ');
+            document.getElementById('vGarage').value = v.garage; document.getElementById('uploadLabel').innerText = "REPLACE IMAGE (DRAG OR CLICK)";
+            closeModal('previewOverlay'); document.getElementById('editOverlay').classList.add('active');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        async function saveVehicle() {
+            const name = document.getElementById('vName').value.trim(); if(!name) return;
             const file = document.getElementById('vImg').files[0];
-
-            if(!name) return alert("UPLINK DENIED: NAME REQUIRED");
-
-            let imgBase = currentEditIdx !== null ? db[currentEditIdx].img : '';
-            if(file) imgBase = await toBase64(file);
-
-            const vehicleData = { name, garage, tags, img: imgBase };
-
-            if(currentEditIdx !== null) db[currentEditIdx] = vehicleData;
-            else db.push(vehicleData);
-
-            localStorage.setItem('VCORE_RESTORED_DB', JSON.stringify(db));
-            render();
-            closeModal();
+            let img = activeIdx !== null ? db[activeIdx].img : '';
+            if(file) img = await toBase64(file);
+            const vData = { name, garage: document.getElementById('vGarage').value, tags: document.getElementById('vTags').value.split(',').map(t => t.trim()).filter(t => t), img };
+            if(activeIdx !== null) db[activeIdx] = vData; else db.push(vData);
+            sync(); closeModal('editOverlay');
         }
 
-        function remove() {
-            if(confirm("PERMANENTLY SCRAP THIS VEHICLE?")) {
-                db.splice(currentEditIdx, 1);
-                localStorage.setItem('VCORE_RESTORED_DB', JSON.stringify(db));
-                render();
-                closeModal();
-            }
-        }
+        function deleteFromPreview() { if(confirm("DELETE?")) { db.splice(activeIdx, 1); sync(); closeModal('previewOverlay'); } }
 
-        function nuke() {
-            if(confirm("THIS WILL ERASE THE ENTIRE DATABASE. PROCEED?")) {
-                db = [];
-                localStorage.removeItem('VCORE_RESTORED_DB');
-                render();
-                switchTab('garage', document.querySelector('.nav-item'));
-            }
-        }
-
+        function sync() { localStorage.setItem('VCORE_FINAL_V4', JSON.stringify(db)); render(); updateStats(); }
         function render() {
-            const grid = document.getElementById('grid');
-            const search = document.getElementById('search').value.toLowerCase();
-            grid.innerHTML = '';
-
-            const filtered = db.filter(v => {
-                const matchSearch = v.name.toLowerCase().includes(search) || v.tags.some(t => t.toLowerCase().includes(search));
-                const matchZone = currentZone === '' || v.garage === currentZone;
-                return matchSearch && matchZone;
-            });
-
-            if(filtered.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; color:#444; letter-spacing:3px; font-size:12px;">NO ASSETS DETECTED</div>';
-            }
-
-            filtered.forEach((v, i) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => openModal(db.indexOf(v));
-                card.innerHTML = `
-                    <img src="${v.img || 'https://via.placeholder.com/400x200/080808/00f2ff?text=NO+IMAGE'}" class="card-img">
-                    <div class="card-info">
-                        <div class="card-meta">${v.garage}</div>
-                        <div class="card-name">${v.name}</div>
-                    </div>
-                `;
+            const grid = document.getElementById('grid'); grid.innerHTML = '';
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = db.filter(v => (v.name.toLowerCase().includes(query) || v.tags.some(t => t.toLowerCase().includes(query))) && (mapFilter === '' || v.garage === mapFilter));
+            filtered.forEach((v) => {
+                const card = document.createElement('div'); card.className = 'card'; card.onclick = () => openPreview(db.indexOf(v));
+                card.innerHTML = `<img src="${v.img || 'https://via.placeholder.com/300x150/111/00f2ff?text=NO+IMAGE'}" class="card-img"><div class="card-info"><div class="card-meta">${v.garage}</div><div class="card-name">${v.name}</div></div>`;
                 grid.appendChild(card);
             });
         }
-
-        function updateStats() {
-            document.getElementById('stat-count').innerText = db.length.toString().padStart(2, '0');
+        function updateStats() { document.getElementById('stat-total').innerText = db.length.toString().padStart(2, '0'); }
+        function exportBackup() {
+            const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = "VCORE_BACKUP.json"; a.click();
         }
-
+        function importDB(e) {
+            const reader = new FileReader(); reader.onload = (ev) => { db = JSON.parse(ev.target.result); sync(); alert("DATABASE RESTORED"); };
+            reader.readAsText(e.target.files[0]);
+        }
+        function nukeDB() { if(confirm("WIPE?")) { db = []; sync(); } }
         const toBase64 = file => new Promise((res) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => res(reader.result);
+            const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result);
         });
 
-        // Initialize
         render();
     </script>
 </body>
