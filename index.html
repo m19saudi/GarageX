@@ -3,262 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>V-CORE // ULTRA</title>
+    <title>V-CORE // ULTIMATE</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
     <style>
-        :root { --accent: #00f2ff; --bg: #050505; }
-
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            touch-action: pan-y; /* Only allow vertical scrolling, stops horizontal jitter */
+        :root {
+            --accent: #00f2ff;
+            --bg: #050505;
+            --panel: #0d0d0d;
+            --border: rgba(255, 255, 255, 0.1);
+            --danger: #ff4444;
         }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', sans-serif; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; height: 100%; width: 100%; overflow: hidden; }
         
-        body, html { 
-            margin: 0; padding: 0; background: var(--bg); color: white; 
-            overflow: hidden; height: 100%; width: 100%;
-        }
-
-        /* HARDWARE ACCELERATED WRAPPER */
-        .hud-container { 
-            display: flex; flex-direction: column; height: 100vh; 
-            padding: 15px; transform: translate3d(0,0,0);
-            backface-visibility: hidden;
-        }
-
-        header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
+        .hud-container { display: flex; flex-direction: column; height: 100vh; padding: 20px; max-width: 1400px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
         
-        .brand { font-weight: 900; font-size: 0.85rem; letter-spacing: 2px; }
+        .brand { font-weight: 900; letter-spacing: 2px; font-style: italic; font-size: 18px; cursor: pointer; }
         .brand span { color: var(--accent); }
-
-        nav { display: flex; gap: 15px; }
-        .nav-item { font-size: 10px; font-weight: 900; color: #444; transition: 0.1s; }
-        .nav-item.active { color: var(--accent); }
-
-        /* THE SMOOTH SCROLLER */
-        .screen { 
-            display: none; flex: 1; overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
-            padding: 15px 0 100px 0;
-            will-change: scroll-position;
-        }
-        .screen.active { display: block; animation: fadeIn 0.2s ease-out; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .grid { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
-        }
         
-        .card { 
-            background: #111; height: 130px; position: relative; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            transform: translate3d(0,0,0); /* Force GPU */
-        }
+        nav { display: flex; gap: 20px; }
+        .nav-item { font-size: 13px; font-weight: 900; color: #444; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .nav-item.active { color: var(--accent); text-shadow: 0 0 10px var(--accent); }
 
-        .card-img { 
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.7; 
-            background: #181818;
-        }
+        .screen { display: none; flex: 1; overflow-y: auto; padding-bottom: 100px; }
+        .screen.active { display: block; }
 
-        .card-info { 
-            position: absolute; bottom: 0; width: 100%; 
-            padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.9));
-        }
-        .card-name { font-weight: 800; font-size: 11px; text-transform: uppercase; }
+        .search-bar { width: 100%; background: #111; border: 1px solid #222; color: white; padding: 15px; margin-bottom: 12px; outline: none; font-size: 16px; }
+        .filter-tags { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        .tag { padding: 6px 15px; background: #0d0d0d; border: 1px solid #333; font-size: 11px; border-radius: 4px; white-space: nowrap; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: 0.2s; }
+        .tag.active { border-color: var(--accent); color: var(--accent); }
 
-        /* UI ELEMENTS */
-        .btn { 
-            background: #000; color: var(--accent); border: 1px solid var(--accent); 
-            padding: 15px; font-weight: 900; width: 100%; font-size: 11px;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn:active { background: var(--accent); color: #000; transition: 0s; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (min-width: 800px) { .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); } }
+        
+        .card { background: var(--panel); border: 1px solid var(--border); height: 150px; position: relative; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,242,255,0.15); transform: translateY(-3px); }
+        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: 0.3s; }
+        .card:hover .card-img { opacity: 0.8; }
+        .card-info { position: absolute; bottom: 0; width: 100%; padding: 10px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); }
+        .card-name { font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 2px; }
+        .card-loc { font-size: 9px; color: var(--accent); font-weight: bold; }
 
-        input, select { 
-            width: 100%; background: #111; border: 1px solid #222; 
-            color: white; padding: 15px; font-size: 16px !important; 
-            margin-bottom: 10px; border-radius: 0; outline: none;
-        }
+        .map-area { height: 60vh; background: #080808; border: 1px solid #1a1a1a; position: relative; overflow: hidden; margin-top: 10px; cursor: crosshair; }
+        .node { position: absolute; width: 45px; height: 45px; background: #000; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; transform: translate(-50%, -50%); cursor: pointer; z-index: 5; transition: 0.2s; }
+        .node:hover { background: var(--accent); color: black; }
+        .node.moving { border-color: var(--danger); box-shadow: 0 0 15px var(--danger); }
 
-        /* MODAL */
-        .overlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); 
-            z-index: 2000; display: none; align-items: center; justify-content: center;
-        }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+        #viewModal { z-index: 2000; }
+        #carModal { z-index: 3000; }
         .overlay.active { display: flex; }
-        .modal-sheet { background: #000; width: 85%; border: 1px solid var(--accent); padding: 25px; }
+        .modal-sheet { background: #000; width: 100%; max-width: 480px; border: 1px solid var(--accent); padding: 30px; }
+        
+        input, select { width: 100%; background: #111; border: 1px solid #222; color: white; padding: 14px; margin-bottom: 12px; font-size: 16px; outline: none; }
+        .btn { background: #000; color: var(--accent); border: 1px solid var(--accent); padding: 14px; font-weight: 900; width: 100%; text-transform: uppercase; cursor: pointer; transition: 0.2s; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; }
+        .btn:hover { background: var(--accent); color: black; }
+        
+        .btn.active-rearrange { background: var(--danger); color: #000; border-color: var(--danger); }
+        .btn.danger { color: var(--danger); border-color: var(--danger); }
+        .btn.danger:hover { background: var(--danger); color: #000; }
 
-        .fab { 
-            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; 
-            background: var(--accent); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            color: black; z-index: 100;
-        }
+        .upload-zone { border: 1px dashed #333; padding: 25px; text-align: center; margin-bottom: 15px; position: relative; }
+        .upload-zone span { font-size: 11px; color: #666; font-weight: bold; }
+        #vImg { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .detail-img { width: 100%; height: 220px; object-fit: contain; background: #080808; margin-bottom: 15px; border: 1px solid #1a1a1a; }
+
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; z-index: 100; box-shadow: 0 0 20px rgba(0,242,255,0.4); transition: 0.4s; cursor: pointer; }
+        .fab span { font-size: 38px; line-height: 1; display: block; margin-top: -2px; font-weight: 300; text-align: center; }
+        .fab:hover { transform: rotate(180deg) scale(1.1); background: #fff; }
+
+        .bulk-row { display: grid; grid-template-columns: 1fr 140px 50px; gap: 8px; margin-bottom: 8px; align-items: stretch; }
+        .bulk-row input, .bulk-row select { margin-bottom: 0; height: 50px; }
+        .bulk-row .btn.danger { padding: 0; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
     </style>
 </head>
 <body>
-
     <div class="hud-container">
         <header>
-            <div class="brand">V-CORE // <span>OS</span></div>
+            <div class="brand" onclick="location.reload()">V-CORE // <span>OS</span></div>
             <nav>
-                <div class="nav-item active" onclick="switchTab('garage', this)">GARAGE</div>
-                <div class="nav-item" onclick="switchTab('network', this)">NET</div>
-                <div class="nav-item" onclick="switchTab('data', this)">DATA</div>
+                <div class="nav-item active" id="t-garage" onclick="switchTab('garage', this)">GARAGE</div>
+                <div class="nav-item" id="t-network" onclick="switchTab('network', this)">NETWORK</div>
+                <div class="nav-item" id="t-data" onclick="switchTab('data', this)">DATA</div>
             </nav>
         </header>
 
-        <div id="screen-garage" class="screen active">
-            <input type="text" id="searchInput" placeholder="SEARCH DATABASE..." oninput="render()">
+        <div id="s-garage" class="screen active">
+            <input type="text" class="search-bar" id="search" placeholder="SEARCH ASSETS..." oninput="render()">
+            <div id="filters" class="filter-tags"></div>
             <div id="grid" class="grid"></div>
         </div>
 
-        <div id="screen-network" class="screen">
-            <button class="btn" onclick="addSector()">+ NEW GARAGE</button>
-            <div id="netList" style="margin-top:20px;"></div>
+        <div id="s-network" class="screen">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn" onclick="addGarage()">+ NEW GARAGE</button>
+                <button class="btn" id="moveBtn" onclick="toggleMove()">REARRANGE: OFF</button>
+            </div>
+            <div class="map-area" id="map" onclick="mapClick(event)"></div>
+            <p id="mapHint" style="font-size:10px; text-align:center; color:#444; margin-top:15px; letter-spacing:1px; line-height:1.6; text-transform: uppercase;">
+                TAP GARAGE TO FILTER VIEW
+            </p>
         </div>
 
-        <div id="screen-data" class="screen">
-            <h2 id="stat-total" style="font-size:3rem; margin:0; color:var(--accent);">00</h2>
-            <p style="font-size:10px; color:#444; margin-bottom:30px;">TOTAL ASSETS</p>
-            
-            <p style="font-size:10px; color:#aaa;">BULK DATA ENTRY</p>
-            <div id="bulkList"></div>
-            <button class="btn" onclick="addBulkRow()" style="margin:10px 0; border-color:#222; color:#555;">+ ROW</button>
-            <button class="btn" onclick="processBulk()">INITIALIZE SYNC</button>
-            
-            <button class="btn" style="margin-top:40px; border-color:red; color:red;" onclick="nuke()">WIPE ALL DATA</button>
+        <div id="s-data" class="screen">
+            <div style="padding:25px; background:#080808; border-left:4px solid var(--accent); margin-bottom:20px;">
+                <h1 id="count" style="margin:0; font-size:4rem; color:var(--accent);">00</h1>
+                <p style="margin:0; font-size:10px; opacity:0.5; font-weight:900;">ASSETS INDEXED</p>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:30px;">
+                <button class="btn" onclick="document.getElementById('import').click()">IMPORT</button>
+                <button class="btn" onclick="exportData()" style="border-color:#333; color:#555;">EXPORT</button>
+            </div>
+            <input type="file" id="import" hidden onchange="importData(event)">
+            <div id="bulkRows"></div>
+            <button class="btn" onclick="addBulkRow()" style="border-color:#222; color:#555; margin:10px 0;">+ ADD ROW</button>
+            <button class="btn" onclick="syncBulk()">SYNC ALL</button>
+            <button class="btn danger" onclick="nuke()" style="margin-top:50px;">FULL SYSTEM WIPE</button>
         </div>
     </div>
 
-    <div class="overlay" id="addOverlay">
-        <div class="modal-sheet">
-            <h3 style="margin-top:0; font-style:italic;">NEW CAR</h3>
+    <div class="overlay" id="carModal" onclick="closeCar()">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <h3 id="modalTitle" style="margin-top:0; color:var(--accent);">NEW_ENTRY</h3>
             <input type="text" id="vName" placeholder="MODEL NAME">
             <select id="vGarage"></select>
-            <input type="file" id="vImg" accept="image/*">
-            <button class="btn" onclick="saveVehicle()">CONFIRM</button>
-            <p onclick="closeAdd()" style="text-align:center; font-size:10px; margin-top:15px; color:#555;">CANCEL</p>
+            <div class="upload-zone">
+                <span id="fileLabel">SELECT IMAGE SOURCE</span>
+                <input type="file" id="vImg" accept="image/*" onchange="processFile(this)">
+            </div>
+            <button class="btn" id="confirmBtn" onclick="saveCar()">SAVE TO DATABASE</button>
+            <button class="btn" onclick="closeCar()" style="margin-top:10px; border:none; color:#444;">CANCEL</button>
         </div>
     </div>
 
-    <div class="fab" onclick="openAdd()"><b>+</b></div>
+    <div class="overlay" id="viewModal" onclick="this.classList.remove('active')">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <img id="dImg" class="detail-img">
+            <h2 id="dName" style="margin:0; text-transform:uppercase;">---</h2>
+            <p id="dLoc" style="color:var(--accent); font-size:12px; font-weight:bold; margin:5px 0 25px 0;">---</p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn" id="editBtn">EDIT</button>
+                <button class="btn danger" id="delBtn">DELETE</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fab" onclick="openCar()"><span>+</span></div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('V_DB')) || [];
-        let sectors = JSON.parse(localStorage.getItem('V_SEC')) || [];
+        let db = JSON.parse(localStorage.getItem('VCORE_DB')) || [];
+        let garages = JSON.parse(localStorage.getItem('VCORE_G')) || [];
+        let curFilter = 'ALL', isMove = false, movingNode = null, tempImg = "", tempImgName = "", editIndex = -1;
 
         function switchTab(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('screen-' + id).classList.add('active');
+            document.getElementById('s-' + id).classList.add('active');
             el.classList.add('active');
-            if(id === 'data') { updateStats(); if(!document.getElementById('bulkList').children.length) addBulkRow(); }
-            if(id === 'network') renderNet();
+            if(id === 'garage') render();
+            if(id === 'network') renderMap();
+            if(id === 'data') { updateStats(); if(!document.getElementById('bulkRows').children.length) addBulkRow(); }
         }
 
-        // Optimized Render (Batched DOM updates)
         function render() {
             const grid = document.getElementById('grid');
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = db.filter(v => v.name.toLowerCase().includes(q));
-            
-            let fragment = '';
-            for(let i=0; i < filtered.length; i++) {
-                fragment += `
-                <div class="card">
-                    <img src="${filtered[i].img || ''}" class="card-img" loading="lazy">
-                    <div class="card-info"><div class="card-name">${filtered[i].name}</div></div>
+            const q = document.getElementById('search').value.toLowerCase();
+            const filters = document.getElementById('filters');
+            filters.innerHTML = `<div class="tag ${curFilter==='ALL'?'active':''}" onclick="setFilter('ALL')">ALL</div>` + 
+                garages.map(g => `<div class="tag ${curFilter===g.name?'active':''}" onclick="setFilter('${g.name}')">${g.id}</div>`).join('');
+
+            const filtered = db.filter(v => (v.name.toLowerCase().includes(q)) && (curFilter==='ALL' || v.garage === curFilter));
+            grid.innerHTML = filtered.map((v, i) => {
+                const g = garages.find(x => x.name === v.garage);
+                return `
+                <div class="card" onclick="viewCar(${db.indexOf(v)})">
+                    <img src="${v.img || ''}" class="card-img" loading="lazy">
+                    <div class="card-info">
+                        <div class="card-name">${v.name}</div>
+                        <div class="card-loc">${v.garage} / ${g?g.id:'??'}</div>
+                    </div>
                 </div>`;
-            }
-            grid.innerHTML = fragment;
+            }).join('');
         }
 
-        function openAdd() {
-            if(!sectors.length) return alert("ADD GARAGE");
-            document.getElementById('vGarage').innerHTML = sectors.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
-            document.getElementById('addOverlay').classList.add('active');
-        }
-
-        function closeAdd() { document.getElementById('addOverlay').classList.remove('active'); }
-
-        // RESIZE IMAGE ON THE FLY (Crucial for Mobile Smoothness)
-        function resizeImage(file) {
-            return new Promise(res => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 400; // Small size for fast mobile loading
-                        const scale = MAX_WIDTH / img.width;
-                        canvas.width = MAX_WIDTH;
-                        canvas.height = img.height * scale;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        res(canvas.toDataURL('image/jpeg', 0.7)); // High compression
-                    }
+        function setFilter(f) { curFilter = f; render(); }
+        
+        function openCar(idx = -1) {
+            if(!garages.length) return alert("ADD GARAGE FIRST");
+            editIndex = idx;
+            document.getElementById('vGarage').innerHTML = garages.map(g => `<option value="${g.name}">${g.name} / ${g.id}</option>`).join('');
+            const label = document.getElementById('fileLabel');
+            
+            if(idx > -1) {
+                document.getElementById('modalTitle').innerText = "EDIT_EXISTING";
+                document.getElementById('vName').value = db[idx].name;
+                document.getElementById('vGarage').value = db[idx].garage;
+                
+                // FIXED: Show "NO IMAGE" if empty so drag and drop works
+                if(db[idx].img && db[idx].img !== "") {
+                    tempImg = db[idx].img;
+                    tempImgName = db[idx].fileName || "IMAGE_SOURCE.JPG";
+                    label.innerText = tempImgName;
+                    label.style.color = "var(--accent)";
+                } else {
+                    tempImg = "";
+                    tempImgName = "";
+                    label.innerText = "NO IMAGE SOURCE // DRAG TO ADD";
+                    label.style.color = "#666";
                 }
+            } else {
+                document.getElementById('modalTitle').innerText = "NEW_ENTRY";
+                document.getElementById('vName').value = ""; tempImg = ""; tempImgName = "";
+                label.innerText = "SELECT IMAGE SOURCE"; label.style.color = "#666";
+            }
+            document.getElementById('carModal').classList.add('active');
+        }
+
+        function closeCar() { document.getElementById('carModal').classList.remove('active'); }
+
+        function processFile(input) {
+            const file = input.files[0];
+            if(!file) return;
+            tempImgName = file.name;
+            document.getElementById('fileLabel').innerText = tempImgName;
+            document.getElementById('fileLabel').style.color = "white";
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const size = 350; 
+                    const scale = size / img.width;
+                    canvas.width = size; canvas.height = img.height * scale;
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    tempImg = canvas.toDataURL('image/jpeg', 0.5); 
+                }
+            }
+        }
+
+        function saveCar() {
+            const n = document.getElementById('vName').value.trim();
+            const g = document.getElementById('vGarage').value;
+            if(!n) return;
+            const entry = { name: n, garage: g, img: tempImg, fileName: tempImgName };
+            if(editIndex > -1) db[editIndex] = entry;
+            else db.push(entry);
+            sync(); closeCar(); document.getElementById('viewModal').classList.remove('active');
+        }
+
+        function viewCar(i) {
+            const v = db[i], g = garages.find(x => x.name === v.garage);
+            document.getElementById('dImg').src = v.img || '';
+            document.getElementById('dName').innerText = v.name;
+            document.getElementById('dLoc').innerText = `LOCATED IN: ${v.garage} / ${g?g.id:'??'}`;
+            document.getElementById('editBtn').onclick = () => openCar(i);
+            document.getElementById('delBtn').onclick = () => { if(confirm("DELETE?")) { db.splice(i,1); sync(); document.getElementById('viewModal').classList.remove('active'); }};
+            document.getElementById('viewModal').classList.add('active');
+        }
+
+        function toggleMove() { 
+            isMove = !isMove; 
+            const btn = document.getElementById('moveBtn');
+            const hint = document.getElementById('mapHint');
+            if(isMove) {
+                btn.innerText = "REARRANGE: ON";
+                btn.classList.add('active-rearrange');
+                hint.innerText = "TAP NODE TO DELETE // TAP EMPTY TO MOVE";
+            } else {
+                btn.innerText = "REARRANGE: OFF";
+                btn.classList.remove('active-rearrange');
+                hint.innerText = "TAP GARAGE TO FILTER VIEW";
+            }
+            renderMap(); 
+        }
+
+        function renderMap() {
+            const m = document.getElementById('map');
+            m.querySelectorAll('.node').forEach(n => n.remove());
+            garages.forEach((g, i) => {
+                const n = document.createElement('div');
+                n.className = 'node' + (movingNode === i ? ' moving' : '');
+                n.style.left = g.x + '%'; n.style.top = g.y + '%';
+                n.innerText = g.id;
+                n.onclick = (e) => { 
+                    e.stopPropagation(); 
+                    if(isMove) {
+                        if(movingNode === i) { if(confirm("DELETE GARAGE?")) { garages.splice(i,1); movingNode=null; saveGarages(); renderMap(); } }
+                        else { movingNode = i; renderMap(); }
+                    } else { curFilter = g.name; switchTab('garage', document.getElementById('t-garage')); }
+                };
+                m.appendChild(n);
             });
         }
 
-        async function saveVehicle() {
-            const n = document.getElementById('vName').value.trim();
-            const g = document.getElementById('vGarage').value;
-            const f = document.getElementById('vImg').files[0];
-            if(!n) return;
-            
-            let img = f ? await resizeImage(f) : '';
-            db.push({ name: n, garage: g, img });
-            
-            saveSync();
-            document.getElementById('vName').value = '';
-            document.getElementById('vImg').value = '';
-            closeAdd();
+        function mapClick(e) {
+            if(isMove && movingNode !== null) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                garages[movingNode].x = ((e.clientX - rect.left) / rect.width) * 100;
+                garages[movingNode].y = ((e.clientY - rect.top) / rect.height) * 100;
+                movingNode = null; saveGarages(); renderMap();
+            }
         }
+
+        function addGarage() {
+            const n = prompt("GARAGE NAME:").toUpperCase();
+            const i = prompt("ID (e.g. G-01):").toUpperCase();
+            if(n && i) { garages.push({name:n, id:i, x:50, y:50}); saveGarages(); renderMap(); }
+        }
+
+        function sync() { localStorage.setItem('VCORE_DB', JSON.stringify(db)); render(); updateStats(); }
+        function saveGarages() { localStorage.setItem('VCORE_G', JSON.stringify(garages)); }
+        function updateStats() { document.getElementById('count').innerText = db.length.toString().padStart(2, '0'); }
 
         function addBulkRow() {
-            const div = document.createElement('div');
-            div.style.display = "flex"; div.style.gap = "5px"; div.style.marginBottom = "5px";
-            div.innerHTML = `<input type="text" class="bn" placeholder="Name" style="margin:0;"><select class="bg" style="margin:0; width:80px;">${sectors.map(s=>`<option value="${s.name}">${s.id}</option>`).join('')}</select>`;
-            document.getElementById('bulkList').appendChild(div);
+            const r = document.createElement('div'); 
+            r.className = "bulk-row";
+            r.innerHTML = `
+                <input type="text" class="bn" placeholder="Name">
+                <select class="bg">${garages.map(g=>`<option value="${g.name}">${g.name} / ${g.id}</option>`).join('')}</select>
+                <button class="btn danger" onclick="this.parentElement.remove()">×</button>`;
+            document.getElementById('bulkRows').appendChild(r);
         }
 
-        function processBulk() {
-            const names = document.querySelectorAll('.bn');
-            const garages = document.querySelectorAll('.bg');
-            names.forEach((n, i) => { if(n.value.trim()) db.push({ name: n.value.trim(), garage: garages[i].value, img: '' }); });
-            saveSync();
-            document.getElementById('bulkList').innerHTML = '';
-            addBulkRow();
-            switchTab('garage', document.querySelectorAll('.nav-item')[0]);
+        function syncBulk() {
+            document.querySelectorAll('.bn').forEach((n, i) => { 
+                if(n.value.trim()) db.push({ name: n.value.trim(), garage: document.querySelectorAll('.bg')[i].value, img: '', fileName: '' }); 
+            });
+            sync(); document.getElementById('bulkRows').innerHTML = ''; addBulkRow();
         }
 
-        function renderNet() {
-            document.getElementById('netList').innerHTML = sectors.map((s,i) => `
-                <div style="padding:15px; background:#111; border:1px solid #222; margin-bottom:5px; display:flex; justify-content:space-between; font-size:12px;">
-                    <span>${s.id} // ${s.name}</span>
-                    <span onclick="delSec(${i})" style="color:red;">WIPE</span>
-                </div>
-            `).join('');
+        function exportData() {
+            const blob = new Blob([JSON.stringify({db, garages})], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "VCORE_BACKUP.json"; a.click();
         }
 
-        function addSector() {
-            const n = prompt("Garage Name:").toUpperCase();
-            const i = prompt("ID (e.g. S1):").toUpperCase();
-            if(n && i) { sectors.push({name:n, id:i}); localStorage.setItem('V_SEC', JSON.stringify(sectors)); renderNet(); }
+        function importData(e) {
+            const r = new FileReader();
+            r.onload = (ev) => { const d = JSON.parse(ev.target.result); db = d.db; garages = d.garages; sync(); saveGarages(); location.reload(); };
+            r.readAsText(e.target.files[0]);
         }
 
-        function delSec(i) { sectors.splice(i,1); localStorage.setItem('V_SEC', JSON.stringify(sectors)); renderNet(); }
-        function saveSync() { localStorage.setItem('V_DB', JSON.stringify(db)); render(); updateStats(); }
-        function updateStats() { document.getElementById('stat-total').innerText = db.length.toString().padStart(2, '0'); }
-        function nuke() { if(confirm("WIPE SYSTEM?")) { localStorage.clear(); location.reload(); } }
+        function nuke() { if(confirm("WIPE ALL?")) { localStorage.clear(); location.reload(); } }
 
         render();
     </script>
