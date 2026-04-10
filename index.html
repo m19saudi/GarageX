@@ -309,8 +309,8 @@
         }
 
         function addGarage() {
-            const n = prompt("GARAGE NAME:").toUpperCase();
-            const i = prompt("ID (e.g. G-01):").toUpperCase();
+            const n = prompt("ID (e.g. G-01)").toUpperCase();
+            const i = prompt("GARAGE NAME:):").toUpperCase();
             if(n && i) { garages.push({name:n, id:i, x:50, y:50}); saveGarages(); renderMap(); }
         }
 
